@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { useFormik } from "formik";
-import { TextField, Grid, Button, Box } from "@mui/material";
+import { TextField, Grid, Box, Typography } from "@mui/material";
 
 interface PreferencesFormValues {
   hobbies?: string;
@@ -8,12 +8,15 @@ interface PreferencesFormValues {
   music?: string;
   movies?: string;
 }
+
 interface Props {
-  data?: Partial<PreferencesFormValues>; // Optional prefill values
+  data?: Partial<PreferencesFormValues>;
   onUpdate: (values: PreferencesFormValues) => void;
 }
 
 const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
+  const lastUpdateRef = useRef<string>("");
+
   const formik = useFormik({
     initialValues: {
       hobbies: data?.hobbies || "",
@@ -26,64 +29,115 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
     },
   });
 
+  const debouncedUpdate = useCallback(
+    (values: PreferencesFormValues) => {
+      const currentValues = JSON.stringify(values);
+      if (currentValues !== lastUpdateRef.current) {
+        lastUpdateRef.current = currentValues;
+        onUpdate(values);
+      }
+    },
+    [onUpdate]
+  );
+
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    formik.handleChange(event);
+
+    setTimeout(() => {
+      debouncedUpdate({
+        ...formik.values,
+        [event.target.name]: event.target.value,
+      });
+    }, 800); // Longer delay for text areas
+  };
+
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            label="Hobbies and Interests"
-            name="hobbies"
-            fullWidth
-            multiline
-            minRows={2}
-            value={formik.values.hobbies}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+    <Box>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+          Personal Preferences
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Tell us about your interests and preferences
+        </Typography>
+      </Box>
 
-        <Grid item xs={12}>
-          <TextField
-            label="Favorite Sport(s)"
-            name="sports"
-            fullWidth
-            value={formik.values.sports}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+      <form onSubmit={formik.handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label="Hobbies and Interests"
+              name="hobbies"
+              fullWidth
+              multiline
+              minRows={3}
+              value={formik.values.hobbies}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              placeholder="Tell us about your hobbies and interests..."
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <TextField
-            label="Preferred Music Genre(s)"
-            name="music"
-            fullWidth
-            value={formik.values.music}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Favorite Sport(s)"
+              name="sports"
+              fullWidth
+              value={formik.values.sports}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              placeholder="What sports do you enjoy?"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <TextField
-            label="Preferred Movie/TV Show(s)"
-            name="movies"
-            fullWidth
-            value={formik.values.movies}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Preferred Music Genre(s)"
+              name="music"
+              fullWidth
+              value={formik.values.music}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              placeholder="What music genres do you prefer?"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <Box textAlign="right">
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={formik.isSubmitting}
-            >
-              Save
-            </Button>
-          </Box>
+          <Grid item xs={12}>
+            <TextField
+              label="Preferred Movie/TV Show(s)"
+              name="movies"
+              fullWidth
+              value={formik.values.movies}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              placeholder="What movies or TV shows do you enjoy?"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
+      </form>
+    </Box>
   );
 };
 

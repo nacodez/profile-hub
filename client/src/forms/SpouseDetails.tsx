@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { useFormik } from "formik";
 import {
   TextField,
@@ -7,20 +7,25 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Button,
   Box,
+  Typography,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 
 interface SpouseDetailsFormValues {
   salutation?: string;
   firstName?: string;
   lastName?: string;
 }
+
 interface Props {
-  data?: Partial<SpouseDetailsFormValues>; // Optional prefill values
+  data?: Partial<SpouseDetailsFormValues>;
   onUpdate: (values: SpouseDetailsFormValues) => void;
 }
+
 const SpouseDetails: React.FC<Props> = ({ data, onUpdate }) => {
+  const lastUpdateRef = useRef<string>("");
+
   const formik = useFormik({
     initialValues: {
       salutation: data?.salutation || "",
@@ -32,58 +37,112 @@ const SpouseDetails: React.FC<Props> = ({ data, onUpdate }) => {
     },
   });
 
+  const debouncedUpdate = useCallback(
+    (values: SpouseDetailsFormValues) => {
+      const currentValues = JSON.stringify(values);
+      if (currentValues !== lastUpdateRef.current) {
+        lastUpdateRef.current = currentValues;
+        onUpdate(values);
+      }
+    },
+    [onUpdate]
+  );
+
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    formik.handleChange(event);
+
+    setTimeout(() => {
+      debouncedUpdate({
+        ...formik.values,
+        [event.target.name]: event.target.value,
+      });
+    }, 500);
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    formik.handleChange(event);
+
+    setTimeout(() => {
+      debouncedUpdate({
+        ...formik.values,
+        [event.target.name]: event.target.value,
+      });
+    }, 100);
+  };
+
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <FormControl fullWidth>
-            <InputLabel id="salutation-label">Salutation</InputLabel>
-            <Select
-              labelId="salutation-label"
-              name="salutation"
-              value={formik.values.salutation}
-              onChange={formik.handleChange}
-            >
-              <MenuItem value="Mr.">Mr.</MenuItem>
-              <MenuItem value="Ms.">Ms.</MenuItem>
-              <MenuItem value="Mrs.">Mrs.</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+    <Box>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+          Spouse Details
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Please provide your spouse's information
+        </Typography>
+      </Box>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="First Name"
-            name="firstName"
-            fullWidth
-            value={formik.values.firstName}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+      <form onSubmit={formik.handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <InputLabel id="spouse-salutation-label">Salutation</InputLabel>
+              <Select
+                labelId="spouse-salutation-label"
+                name="salutation"
+                value={formik.values.salutation}
+                onChange={handleSelectChange}
+                onBlur={formik.handleBlur}
+                label="Salutation"
+                sx={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select salutation</em>
+                </MenuItem>
+                <MenuItem value="Mr.">Mr.</MenuItem>
+                <MenuItem value="Ms.">Ms.</MenuItem>
+                <MenuItem value="Mrs.">Mrs.</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Last Name"
-            name="lastName"
-            fullWidth
-            value={formik.values.lastName}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="First Name"
+              name="firstName"
+              fullWidth
+              value={formik.values.firstName}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <Box textAlign="right">
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={formik.isSubmitting}
-            >
-              Save
-            </Button>
-          </Box>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Last Name"
+              name="lastName"
+              fullWidth
+              value={formik.values.lastName}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
+      </form>
+    </Box>
   );
 };
 

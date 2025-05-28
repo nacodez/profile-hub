@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Grid } from "@mui/material";
 import {
   TextField,
   MenuItem,
-  Button,
   FormControl,
   InputLabel,
   Select,
   Box,
+  Typography,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 
 interface AdditionalDetailsFormValues {
   address: string;
@@ -22,18 +23,20 @@ interface AdditionalDetailsFormValues {
 }
 
 interface Props {
-  data?: Partial<AdditionalDetailsFormValues>; // Optional prefill values
+  data?: Partial<AdditionalDetailsFormValues>;
   onUpdate: (values: AdditionalDetailsFormValues) => void;
 }
 
 const today = new Date();
-const seventeenYearsAgo = new Date(
+const minDate = new Date(
   today.getFullYear() - 17,
   today.getMonth(),
   today.getDate()
 );
 
 const AdditionalDetails: React.FC<Props> = ({ data, onUpdate }) => {
+  const lastUpdateRef = useRef<string>("");
+
   const formik = useFormik({
     initialValues: {
       address: data?.address || "",
@@ -44,110 +47,189 @@ const AdditionalDetails: React.FC<Props> = ({ data, onUpdate }) => {
       maritalStatus: data?.maritalStatus || "",
     },
     validationSchema: Yup.object({
-      postalCode: Yup.string().required("Required"),
+      postalCode: Yup.string().required("Postal code is required"),
       dob: Yup.date()
-        .max(seventeenYearsAgo, "Must be at least 17 years old")
-        .required("Required"),
+        .max(minDate, "Must be at least 17 years old")
+        .required("Date of birth is required"),
     }),
     onSubmit: (values) => {
       onUpdate(values);
     },
   });
 
+  const debouncedUpdate = useCallback(
+    (values: AdditionalDetailsFormValues) => {
+      const currentValues = JSON.stringify(values);
+      if (currentValues !== lastUpdateRef.current) {
+        lastUpdateRef.current = currentValues;
+        onUpdate(values);
+      }
+    },
+    [onUpdate]
+  );
+
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    formik.handleChange(event);
+
+    setTimeout(() => {
+      debouncedUpdate({
+        ...formik.values,
+        [event.target.name]: event.target.value,
+      });
+    }, 500);
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    formik.handleChange(event);
+
+    setTimeout(() => {
+      debouncedUpdate({
+        ...formik.values,
+        [event.target.name]: event.target.value,
+      });
+    }, 100);
+  };
+
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            label="Home Address"
-            name="address"
-            fullWidth
-            value={formik.values.address}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+    <Box>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+          Additional Details
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Fields marked with * are mandatory field
+        </Typography>
+      </Box>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Country"
-            name="country"
-            fullWidth
-            value={formik.values.country}
-            onChange={formik.handleChange}
-          />
-        </Grid>
+      <form onSubmit={formik.handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label="Home Address"
+              name="address"
+              fullWidth
+              multiline
+              rows={2}
+              value={formik.values.address}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Postal Code"
-            name="postalCode"
-            fullWidth
-            value={formik.values.postalCode}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.postalCode && Boolean(formik.errors.postalCode)
-            }
-            helperText={formik.touched.postalCode && formik.errors.postalCode}
-          />
-        </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Country"
+              name="country"
+              fullWidth
+              value={formik.values.country}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Date of Birth"
-            name="dob"
-            type="date"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.dob}
-            onChange={formik.handleChange}
-            error={formik.touched.dob && Boolean(formik.errors.dob)}
-            helperText={formik.touched.dob && formik.errors.dob}
-          />
-        </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Postal Code*"
+              name="postalCode"
+              fullWidth
+              value={formik.values.postalCode}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.postalCode && Boolean(formik.errors.postalCode)
+              }
+              helperText={formik.touched.postalCode && formik.errors.postalCode}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id="gender-label">Gender</InputLabel>
-            <Select
-              labelId="gender-label"
-              name="gender"
-              value={formik.values.gender}
-              onChange={formik.handleChange}
-            >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Date of Birth*"
+              name="dob"
+              type="date"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.dob}
+              onChange={handleFieldChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.dob && Boolean(formik.errors.dob)}
+              helperText={formik.touched.dob && formik.errors.dob}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                },
+              }}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <FormControl fullWidth>
-            <InputLabel id="marital-label">Marital Status</InputLabel>
-            <Select
-              labelId="marital-label"
-              name="maritalStatus"
-              value={formik.values.maritalStatus}
-              onChange={formik.handleChange}
-            >
-              <MenuItem value="Single">Single</MenuItem>
-              <MenuItem value="Married">Married</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="gender-label">Gender</InputLabel>
+              <Select
+                labelId="gender-label"
+                name="gender"
+                value={formik.values.gender}
+                onChange={handleSelectChange}
+                onBlur={formik.handleBlur}
+                label="Gender"
+                sx={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select gender</em>
+                </MenuItem>
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-        <Grid item xs={12}>
-          <Box textAlign="right">
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={!formik.isValid || formik.isSubmitting}
-            >
-              Save
-            </Button>
-          </Box>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="marital-label">Marital Status</InputLabel>
+              <Select
+                labelId="marital-label"
+                name="maritalStatus"
+                value={formik.values.maritalStatus}
+                onChange={handleSelectChange}
+                onBlur={formik.handleBlur}
+                label="Marital Status"
+                sx={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select marital status</em>
+                </MenuItem>
+                <MenuItem value="Single">Single</MenuItem>
+                <MenuItem value="Married">Married</MenuItem>
+                <MenuItem value="Divorced">Divorced</MenuItem>
+                <MenuItem value="Widowed">Widowed</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
+      </form>
+    </Box>
   );
 };
 
