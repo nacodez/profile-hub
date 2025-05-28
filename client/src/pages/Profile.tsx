@@ -9,8 +9,21 @@ import {
   Avatar,
   IconButton,
   Divider,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
-import { Edit, PhotoCamera, Menu, ArrowBack } from "@mui/icons-material";
+import {
+  Edit,
+  PhotoCamera,
+  Menu as MenuIcon,
+  ArrowBack,
+  Home,
+  Person,
+  EditNote,
+  Logout,
+} from "@mui/icons-material";
 import BasicDetails from "../forms/BasicDetails";
 import AdditionalDetails from "../forms/AdditionalDetails";
 import SpouseDetails from "../forms/SpouseDetails";
@@ -63,6 +76,7 @@ const Profile: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">(
     "idle"
   );
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   // Load profile data on component mount
   useEffect(() => {
@@ -74,7 +88,6 @@ const Profile: React.FC = () => {
       } catch (err) {
         console.error("Failed to fetch profile:", err);
         if (err.response?.status === 401) {
-          // redirect to login if unauthorized
           navigate("/");
         }
         setLoading(false);
@@ -102,7 +115,6 @@ const Profile: React.FC = () => {
       await axios.post("/profile", formData);
       setSaveStatus("success");
       setIsEditing(false);
-      // clear success message after 3 seconds
       setTimeout(() => setSaveStatus("idle"), 3000);
     } catch (err) {
       console.error("Error saving profile:", err);
@@ -113,13 +125,41 @@ const Profile: React.FC = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Refetch data to reset any unsaved changes
     axios.get("/profile").then((res) => {
       setFormData(res.data || {});
     });
   };
 
-  // determine which sections to show
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (action: string) => {
+    handleMenuClose();
+    switch (action) {
+      case "home":
+        navigate("/");
+        break;
+      case "profile":
+        setIsEditing(false);
+        setActiveSection("Basic Details");
+        break;
+      case "edit":
+        setIsEditing(true);
+        setActiveSection("Basic Details");
+        break;
+      case "logout":
+        axios.post("/auth/logout").finally(() => {
+          navigate("/");
+        });
+        break;
+    }
+  };
+
   const sections = [
     "Basic Details",
     "Additional Details",
@@ -131,10 +171,9 @@ const Profile: React.FC = () => {
 
   const renderSectionContent = () => {
     if (!isEditing) {
-      return renderViewMode();
+      return renderViewModeBySection();
     }
 
-    // Show appropriate form based on active section
     switch (activeSection) {
       case "Basic Details":
         return (
@@ -169,94 +208,42 @@ const Profile: React.FC = () => {
     }
   };
 
-  const renderViewMode = () => {
+  // NEW: Render only the selected section in view mode
+  const renderViewModeBySection = () => {
     const basic = formData?.basicDetails;
     const additional = formData?.additionalDetails;
     const spouse = formData?.spouseDetails;
     const preferences = formData?.preferences;
 
-    return (
-      <Box>
-        {/* Profile header with avatar */}
-        <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-          <Avatar
-            sx={{
-              width: 80,
-              height: 80,
-              mr: 3,
-              backgroundColor: "#666",
-            }}
-          >
-            <PhotoCamera />
-          </Avatar>
+    switch (activeSection) {
+      case "Basic Details":
+        return (
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {basic?.firstName
-                ? `${basic.firstName} ${basic.lastName || ""}`
-                : "User Name"}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {basic?.email}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Divider sx={{ my: 2 }} />
-
-        {/* Basic Details Display */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            Basic Details
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: 2,
-            }}
-          >
-            <Box>
-              <Typography variant="body2" color="text.secondary">
-                Salutation*
-              </Typography>
-              <Typography variant="body1">
-                {basic?.salutation || "Not specified"}
-              </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+              <Avatar
+                sx={{
+                  width: 80,
+                  height: 80,
+                  mr: 3,
+                  backgroundColor: "#4A90E2",
+                }}
+              >
+                <PhotoCamera />
+              </Avatar>
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {basic?.firstName
+                    ? `${basic.firstName} ${basic.lastName || ""}`
+                    : "User Name"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {basic?.email}
+                </Typography>
+              </Box>
             </Box>
-            <Box>
-              <Typography variant="body2" color="text.secondary">
-                First name*
-              </Typography>
-              <Typography variant="body1">
-                {basic?.firstName || "Not specified"}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" color="text.secondary">
-                Last name*
-              </Typography>
-              <Typography variant="body1">
-                {basic?.lastName || "Not specified"}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" color="text.secondary">
-                Email address*
-              </Typography>
-              <Typography variant="body1">
-                {basic?.email || "Not specified"}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <Divider sx={{ my: 2 }} />
-
-        {/* Additional Details Display */}
-        {additional && Object.keys(additional).length > 0 && (
-          <Box sx={{ mb: 3 }}>
+            <Divider sx={{ my: 2 }} />
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-              Additional Details
+              Basic Details
             </Typography>
             <Box
               sx={{
@@ -265,70 +252,128 @@ const Profile: React.FC = () => {
                 gap: 2,
               }}
             >
-              {additional.address && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Address
-                  </Typography>
-                  <Typography variant="body1">{additional.address}</Typography>
-                </Box>
-              )}
-              {additional.country && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Country
-                  </Typography>
-                  <Typography variant="body1">{additional.country}</Typography>
-                </Box>
-              )}
-              {additional.postalCode && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Postal Code
-                  </Typography>
-                  <Typography variant="body1">
-                    {additional.postalCode}
-                  </Typography>
-                </Box>
-              )}
-              {additional.dob && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Date of Birth
-                  </Typography>
-                  <Typography variant="body1">{additional.dob}</Typography>
-                </Box>
-              )}
-              {additional.gender && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Gender
-                  </Typography>
-                  <Typography variant="body1">{additional.gender}</Typography>
-                </Box>
-              )}
-              {additional.maritalStatus && (
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Marital Status
-                  </Typography>
-                  <Typography variant="body1">
-                    {additional.maritalStatus}
-                  </Typography>
-                </Box>
-              )}
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  Salutation*
+                </Typography>
+                <Typography variant="body1">
+                  {basic?.salutation || "Not specified"}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  First name*
+                </Typography>
+                <Typography variant="body1">
+                  {basic?.firstName || "Not specified"}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  Last name*
+                </Typography>
+                <Typography variant="body1">
+                  {basic?.lastName || "Not specified"}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  Email address*
+                </Typography>
+                <Typography variant="body1">
+                  {basic?.email || "Not specified"}
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        )}
+        );
 
-        {/* Spouse Details Display - only show if married */}
-        {additional?.maritalStatus === "Married" && spouse && (
-          <>
-            <Divider sx={{ my: 2 }} />
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-                Spouse Details
+      case "Additional Details":
+        return (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Additional Details
+            </Typography>
+            {additional && Object.keys(additional).length > 0 ? (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: 2,
+                }}
+              >
+                {additional.address && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Address
+                    </Typography>
+                    <Typography variant="body1">
+                      {additional.address}
+                    </Typography>
+                  </Box>
+                )}
+                {additional.country && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Country
+                    </Typography>
+                    <Typography variant="body1">
+                      {additional.country}
+                    </Typography>
+                  </Box>
+                )}
+                {additional.postalCode && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Postal Code
+                    </Typography>
+                    <Typography variant="body1">
+                      {additional.postalCode}
+                    </Typography>
+                  </Box>
+                )}
+                {additional.dob && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Date of Birth
+                    </Typography>
+                    <Typography variant="body1">{additional.dob}</Typography>
+                  </Box>
+                )}
+                {additional.gender && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Gender
+                    </Typography>
+                    <Typography variant="body1">{additional.gender}</Typography>
+                  </Box>
+                )}
+                {additional.maritalStatus && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Marital Status
+                    </Typography>
+                    <Typography variant="body1">
+                      {additional.maritalStatus}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No additional details provided yet.
               </Typography>
+            )}
+          </Box>
+        );
+
+      case "Spouse Details":
+        return (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Spouse Details
+            </Typography>
+            {spouse && Object.keys(spouse).some((key) => spouse[key]) ? (
               <Box
                 sx={{
                   display: "grid",
@@ -361,18 +406,22 @@ const Profile: React.FC = () => {
                   </Box>
                 )}
               </Box>
-            </Box>
-          </>
-        )}
-
-        {/* Preferences Display */}
-        {preferences && Object.keys(preferences).length > 0 && (
-          <>
-            <Divider sx={{ my: 2 }} />
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-                Personal Preferences
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No spouse details provided yet.
               </Typography>
+            )}
+          </Box>
+        );
+
+      case "Personal Preferences":
+        return (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Personal Preferences
+            </Typography>
+            {preferences &&
+            Object.keys(preferences).some((key) => preferences[key]) ? (
               <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 2 }}>
                 {preferences.hobbies && (
                   <Box>
@@ -413,11 +462,17 @@ const Profile: React.FC = () => {
                   </Box>
                 )}
               </Box>
-            </Box>
-          </>
-        )}
-      </Box>
-    );
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No preferences provided yet.
+              </Typography>
+            )}
+          </Box>
+        );
+
+      default:
+        return null;
+    }
   };
 
   if (loading) return <Typography>Loading...</Typography>;
@@ -426,16 +481,19 @@ const Profile: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         padding: 2,
       }}
     >
-      <Container maxWidth="md">
+      <Container
+        maxWidth="xl"
+        sx={{ maxWidth: { xs: "100%", sm: "lg", md: "xl" } }}
+      >
         <Paper
           elevation={8}
           sx={{ backgroundColor: "rgba(255, 255, 255, 0.95)", borderRadius: 3 }}
         >
-          {/* Header section */}
+          {/* Header */}
           <Box
             sx={{
               display: "flex",
@@ -446,22 +504,21 @@ const Profile: React.FC = () => {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
+              {/* Custom Logo */}
               <Box
                 sx={{
-                  width: 80,
-                  height: 40,
-                  border: "2px solid #ccc",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  color: "#666",
-                  borderRadius: 1,
                   mr: 2,
+                  padding: 1,
+                  backgroundColor: "#4A90E2",
+                  borderRadius: 2,
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  minWidth: "60px",
+                  textAlign: "center",
                 }}
               >
-                LOGO
+                MyApp
               </Box>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 {isEditing ? "Edit Profile" : "My Profile"}
@@ -488,17 +545,47 @@ const Profile: React.FC = () => {
                   Edit profile
                 </Button>
               )}
-              <IconButton>
-                <Menu />
+              <IconButton onClick={handleMenuClick}>
+                <MenuIcon />
               </IconButton>
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={() => handleMenuItemClick("home")}>
+                  <ListItemIcon>
+                    <Home fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Home</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuItemClick("home")}>
+                  <ListItemIcon>
+                    <Person fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>My Profile</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuItemClick("edit")}>
+                  <ListItemIcon>
+                    <EditNote fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Edit Profile</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuItemClick("logout")}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
+                </MenuItem>
+              </Menu>
             </Box>
           </Box>
 
           <Box sx={{ display: "flex", minHeight: "600px" }}>
-            {/* Navigation Sidebar */}
+            {/* Sidebar */}
             <Box
               sx={{
-                width: 200,
+                width: 250,
                 borderRight: "1px solid #eee",
                 p: 2,
                 backgroundColor: "rgba(0, 0, 0, 0.02)",
@@ -514,11 +601,12 @@ const Profile: React.FC = () => {
                     cursor: "pointer",
                     borderBottom: "1px solid #eee",
                     backgroundColor:
-                      activeSection === section ? "#f0f0f0" : "transparent",
+                      activeSection === section ? "#e3f2fd" : "transparent",
                     fontWeight: activeSection === section ? "bold" : "normal",
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5",
-                    },
+                    color: activeSection === section ? "#1976d2" : "inherit",
+                    "&:hover": { backgroundColor: "#f5f5f5" },
+                    borderRadius: 1,
+                    mb: 0.5,
                   }}
                 >
                   <Typography variant="body2">{section}</Typography>
@@ -526,11 +614,11 @@ const Profile: React.FC = () => {
               ))}
             </Box>
 
-            {/* Main Content Area */}
-            <Box sx={{ flex: 1, p: 3 }}>{renderSectionContent()}</Box>
+            {/* Content */}
+            <Box sx={{ flex: 1, p: 4 }}>{renderSectionContent()}</Box>
           </Box>
 
-          {/* Action buttons at bottom */}
+          {/* Footer */}
           {isEditing && (
             <Box
               sx={{
@@ -557,12 +645,10 @@ const Profile: React.FC = () => {
                 variant="contained"
                 onClick={handleSaveAll}
                 sx={{
-                  backgroundColor: "#666",
+                  backgroundColor: "#4A90E2",
                   textTransform: "uppercase",
                   fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#555",
-                  },
+                  "&:hover": { backgroundColor: "#357abd" },
                 }}
               >
                 Save & Update

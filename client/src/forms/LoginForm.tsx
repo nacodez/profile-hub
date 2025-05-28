@@ -34,10 +34,9 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await axiosInstance.post("/auth/login", values);
+        await axiosInstance.post("/auth/login", values);
         onSuccess();
       } catch (err: unknown) {
-        // handle different error types
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
             onError("Your user ID or password does not match.");
@@ -58,91 +57,156 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={2}>
-        <TextField
-          label="User ID"
-          name="userId"
-          fullWidth
-          variant="outlined"
-          value={formik.values.userId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.userId && Boolean(formik.errors.userId)}
-          helperText={formik.touched.userId && formik.errors.userId}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            },
-          }}
-        />
-
-        <TextField
-          label="Password"
-          name="password"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          variant="outlined"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            },
-          }}
-        />
-
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="keepLoggedIn"
-              checked={formik.values.keepLoggedIn}
+    <Box sx={{ maxWidth: 400, mx: "auto" }}>
+      <form onSubmit={formik.handleSubmit}>
+        <Box display="flex" flexDirection="column" gap={2.5}>
+          {/* User ID Field */}
+          <Box>
+            <Box sx={{ textAlign: "left", mb: 0.5 }}>
+              <span
+                style={{ color: "white", fontSize: "16px", fontWeight: "500" }}
+              >
+                User ID*
+              </span>
+            </Box>
+            <TextField
+              name="userId"
+              fullWidth
+              variant="outlined"
+              value={formik.values.userId}
               onChange={formik.handleChange}
-              size="small"
+              onBlur={formik.handleBlur}
+              error={formik.touched.userId && Boolean(formik.errors.userId)}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  borderRadius: 1,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.7)",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "white",
+                  padding: "12px 14px",
+                },
+              }}
             />
-          }
-          label="Keep me logged in"
-          sx={{ alignSelf: "flex-start", fontSize: "14px" }}
-        />
+          </Box>
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!formik.isValid || formik.isSubmitting}
-          sx={{
-            backgroundColor: "#000",
-            color: "white",
-            fontWeight: "bold",
-            textTransform: "uppercase",
-            padding: "12px",
-            "&:hover": {
-              backgroundColor: "#333",
-            },
-            "&:disabled": {
-              backgroundColor: "#ccc",
-            },
-          }}
-        >
-          LOGIN
-        </Button>
-      </Box>
-    </form>
+          {/* Password Field */}
+          <Box>
+            <Box sx={{ textAlign: "left", mb: 0.5 }}>
+              <span
+                style={{ color: "white", fontSize: "16px", fontWeight: "500" }}
+              >
+                Password*
+              </span>
+            </Box>
+            <TextField
+              name="password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              variant="outlined"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  borderRadius: 1,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.7)",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "white",
+                  padding: "12px 14px",
+                },
+              }}
+            />
+          </Box>
+
+          {/* Keep me logged in checkbox */}
+          <Box sx={{ textAlign: "left", mt: 1 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="keepLoggedIn"
+                  checked={formik.values.keepLoggedIn}
+                  onChange={formik.handleChange}
+                  size="small"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-checked": {
+                      color: "white",
+                    },
+                  }}
+                />
+              }
+              label={
+                <span style={{ color: "white", fontSize: "14px" }}>
+                  Keep me logged in
+                </span>
+              }
+            />
+          </Box>
+
+          {/* Login Button */}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={!formik.isValid || formik.isSubmitting}
+            sx={{
+              backgroundColor: "#000",
+              color: "white",
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              padding: "14px",
+              fontSize: "16px",
+              mt: 2,
+              borderRadius: 1,
+              "&:hover": {
+                backgroundColor: "#333",
+              },
+              "&:disabled": {
+                backgroundColor: "#666",
+                color: "#ccc",
+              },
+            }}
+          >
+            LOGIN
+          </Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
 
