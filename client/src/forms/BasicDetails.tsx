@@ -1,17 +1,19 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
   TextField,
   MenuItem,
-  Grid,
   FormControl,
   InputLabel,
   Select,
   Box,
   Typography,
   FormHelperText,
+  Avatar,
+  Button,
 } from "@mui/material";
+import { PhotoCamera } from "@mui/icons-material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
 interface BasicDetailsFormValues {
@@ -28,6 +30,8 @@ interface Props {
 
 const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
   const lastUpdateRef = useRef<string>("");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -91,20 +95,88 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
     }, 300);
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", mb: 1, color: "#333" }}
+        >
           Basic Details
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: "#666" }}>
           Fields marked with * are mandatory field
         </Typography>
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
+        <Box display="flex" gap={4} alignItems="flex-start">
+          {/* Profile Image Upload - Left Side */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1,
+              minWidth: "120px",
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 80,
+                height: 80,
+                backgroundColor: "#4A90E2",
+              }}
+              src={profileImage || undefined}
+            >
+              {!profileImage && <PhotoCamera />}
+            </Avatar>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              ref={fileInputRef}
+              style={{ display: "none" }}
+            />
+            <Button
+              variant="text"
+              onClick={handleUploadClick}
+              sx={{
+                color: "#333",
+                textDecoration: "underline",
+                textTransform: "none",
+                padding: 0,
+                minWidth: "auto",
+              }}
+            >
+              Upload image
+            </Button>
+          </Box>
+
+          {/* Form Fields - Right Side */}
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap={3}
+            flex={1}
+            sx={{ maxWidth: "sm" }}
+          >
+            {/* Salutation */}
             <FormControl
               fullWidth
               error={
@@ -135,9 +207,8 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 <FormHelperText>{formik.errors.salutation}</FormHelperText>
               )}
             </FormControl>
-          </Grid>
 
-          <Grid item xs={12} sm={4}>
+            {/* First Name */}
             <TextField
               label="First name*"
               name="firstName"
@@ -155,9 +226,8 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 },
               }}
             />
-          </Grid>
 
-          <Grid item xs={12} sm={4}>
+            {/* Last Name */}
             <TextField
               label="Last name*"
               name="lastName"
@@ -173,9 +243,8 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 },
               }}
             />
-          </Grid>
 
-          <Grid item xs={12}>
+            {/* Email */}
             <TextField
               label="Email address*"
               name="email"
@@ -192,8 +261,16 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 },
               }}
             />
-          </Grid>
-        </Grid>
+
+            {/* Mandatory field note */}
+            <Typography
+              variant="body2"
+              sx={{ color: "#666", fontSize: "12px" }}
+            >
+              * Mandatory field
+            </Typography>
+          </Box>
+        </Box>
       </form>
     </Box>
   );

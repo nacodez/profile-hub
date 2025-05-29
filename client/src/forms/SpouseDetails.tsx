@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import {
   TextField,
   MenuItem,
-  Grid,
   FormControl,
   InputLabel,
   Select,
@@ -75,72 +74,72 @@ const SpouseDetails: React.FC<Props> = ({ data, onUpdate }) => {
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", mb: 1, color: "#333" }}
+        >
           Spouse Details
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: "#666" }}>
           Please provide your spouse's information
         </Typography>
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel id="spouse-salutation-label">Salutation</InputLabel>
-              <Select
-                labelId="spouse-salutation-label"
-                name="salutation"
-                value={formik.values.salutation}
-                onChange={handleSelectChange}
-                onBlur={formik.handleBlur}
-                label="Salutation"
-                sx={{
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                }}
-              >
-                <MenuItem value="">
-                  <em>Select salutation</em>
-                </MenuItem>
-                <MenuItem value="Mr.">Mr.</MenuItem>
-                <MenuItem value="Ms.">Ms.</MenuItem>
-                <MenuItem value="Mrs.">Mrs.</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="First Name"
-              name="firstName"
-              fullWidth
-              value={formik.values.firstName}
-              onChange={handleFieldChange}
+        <Box display="flex" flexDirection="column" gap={3}>
+          {/* Salutation */}
+          <FormControl fullWidth>
+            <InputLabel id="spouse-salutation-label">Salutation</InputLabel>
+            <Select
+              labelId="spouse-salutation-label"
+              name="salutation"
+              value={formik.values.salutation}
+              onChange={handleSelectChange}
               onBlur={formik.handleBlur}
+              label="Salutation"
               sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                },
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
               }}
-            />
-          </Grid>
+            >
+              <MenuItem value="">
+                <em>Select salutation</em>
+              </MenuItem>
+              <MenuItem value="Mr.">Mr.</MenuItem>
+              <MenuItem value="Ms.">Ms.</MenuItem>
+              <MenuItem value="Mrs.">Mrs.</MenuItem>
+            </Select>
+          </FormControl>
 
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Last Name"
-              name="lastName"
-              fullWidth
-              value={formik.values.lastName}
-              onChange={handleFieldChange}
-              onBlur={formik.handleBlur}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                },
-              }}
-            />
-          </Grid>
-        </Grid>
+          {/* First Name */}
+          <TextField
+            label="First Name"
+            name="firstName"
+            fullWidth
+            value={formik.values.firstName}
+            onChange={handleFieldChange}
+            onBlur={formik.handleBlur}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              },
+            }}
+          />
+
+          {/* Last Name */}
+          <TextField
+            label="Last Name"
+            name="lastName"
+            fullWidth
+            value={formik.values.lastName}
+            onChange={handleFieldChange}
+            onBlur={formik.handleBlur}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              },
+            }}
+          />
+        </Box>
       </form>
     </Box>
   );
