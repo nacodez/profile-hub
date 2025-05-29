@@ -18,14 +18,14 @@ import {
   Dashboard,
   Settings,
   Menu as MenuIcon,
-  Home,
   EditNote,
   Logout,
 } from "@mui/icons-material";
-import axios from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
@@ -37,7 +37,6 @@ const HomePage: React.FC = () => {
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
   };
-
   const handleMenuItemClick = (action: string) => {
     handleMenuClose();
     switch (action) {
@@ -48,13 +47,12 @@ const HomePage: React.FC = () => {
         navigate("/profile");
         break;
       case "logout":
-        axios.post("/auth/logout").finally(() => {
-          navigate("/login");
-        });
+        // Use the logout function from AuthContext instead of manual API call
+        logout();
+        // Remove the manual navigation - let ProtectedRoute handle it
         break;
     }
   };
-
   return (
     <Box
       sx={{
@@ -100,32 +98,10 @@ const HomePage: React.FC = () => {
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 }}
               >
-                MyApp
+                ProfileHub
               </Box>
-              <Typography
-                variant="h6"
-                sx={{ color: "white", fontWeight: "bold" }}
-              >
-                Profile Hub
-              </Typography>
             </Box>
-
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/profile")}
-                sx={{
-                  color: "white",
-                  borderColor: "rgba(255, 255, 255, 0.5)",
-                  "&:hover": {
-                    borderColor: "white",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  },
-                }}
-              >
-                My Profile
-              </Button>
-
               <IconButton onClick={handleMenuClick} sx={{ color: "white" }}>
                 <MenuIcon />
               </IconButton>

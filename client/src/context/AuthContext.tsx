@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await axios.get("/auth/verify");
       setIsAuthenticated(true);
     } catch (error) {
+      console.error("Authentication check failed:", error);
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
@@ -48,7 +49,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
+      // Always set authenticated to false regardless of API call success
       setIsAuthenticated(false);
+      // Optional: Clear any local storage or other client-side data
+      // localStorage.clear(); // If you're using localStorage
     }
   };
 

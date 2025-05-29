@@ -29,6 +29,7 @@ import AdditionalDetails from "../forms/AdditionalDetails";
 import SpouseDetails from "../forms/SpouseDetails";
 import Preferences from "../forms/Preferences";
 import axios from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext"; // Add this import
 
 // Define interfaces for type safety
 interface BasicDetailsType {
@@ -69,6 +70,7 @@ interface ProfileFormData {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Add this line
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("Basic Details");
   const [formData, setFormData] = useState<ProfileFormData | null>(null);
@@ -88,7 +90,7 @@ const Profile: React.FC = () => {
       } catch (err) {
         console.error("Failed to fetch profile:", err);
         if (err.response?.status === 401) {
-          navigate("/");
+          navigate("/login");
         }
         setLoading(false);
       }
@@ -138,7 +140,7 @@ const Profile: React.FC = () => {
     setMenuAnchorEl(null);
   };
 
-  const handleMenuItemClick = (action: string) => {
+  const handleMenuItemClick = async (action: string) => {
     handleMenuClose();
     switch (action) {
       case "home":
@@ -153,9 +155,14 @@ const Profile: React.FC = () => {
         setActiveSection("Basic Details");
         break;
       case "logout":
-        axios.post("/auth/logout").finally(() => {
-          navigate("/");
-        });
+        try {
+          await logout(); // Use the logout function from AuthContext
+          navigate("/login");
+        } catch (error) {
+          console.error("Logout error:", error);
+          // Force redirect even if logout fails
+          navigate("/login");
+        }
         break;
     }
   };
@@ -518,7 +525,7 @@ const Profile: React.FC = () => {
                   textAlign: "center",
                 }}
               >
-                MyApp
+                ProfileHub
               </Box>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 {isEditing ? "Edit Profile" : "My Profile"}
@@ -559,7 +566,7 @@ const Profile: React.FC = () => {
                   </ListItemIcon>
                   <ListItemText>Home</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("home")}>
+                <MenuItem onClick={() => handleMenuItemClick("profile")}>
                   <ListItemIcon>
                     <Person fontSize="small" />
                   </ListItemIcon>

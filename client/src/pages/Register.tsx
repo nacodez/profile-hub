@@ -51,7 +51,7 @@ const RegisterPage: React.FC = () => {
                 display: "inline-block",
               }}
             >
-              MyApp
+              ProfileHub
             </Box>
           </Box>
 
