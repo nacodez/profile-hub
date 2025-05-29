@@ -23,8 +23,7 @@ const LoginPage: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
         display: "flex",
         flexDirection: "column",
         padding: 2,
@@ -64,7 +63,7 @@ const LoginPage: React.FC = () => {
             <Typography
               variant="h4"
               sx={{
-                color: "white",
+                color: "#000000",
                 fontWeight: "400",
                 fontSize: { xs: "2rem", md: "2.5rem" },
                 mb: 2,
@@ -78,7 +77,7 @@ const LoginPage: React.FC = () => {
               sx={{
                 width: "60px",
                 height: "3px",
-                backgroundColor: "white",
+                backgroundColor: "#000000",
                 margin: "0 auto",
               }}
             />

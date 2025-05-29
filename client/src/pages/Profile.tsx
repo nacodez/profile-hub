@@ -4,7 +4,6 @@ import {
   Container,
   Box,
   Typography,
-  Paper,
   Button,
   Avatar,
   Divider,
@@ -191,18 +190,24 @@ const Profile: React.FC = () => {
                 <PhotoCamera />
               </Avatar>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "#333" }}
+                >
                   {basic?.firstName
                     ? `${basic.firstName} ${basic.lastName || ""}`
                     : "User Name"}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: "#666" }}>
                   {basic?.email}
                 </Typography>
               </Box>
             </Box>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Divider sx={{ my: 2, borderColor: "#ddd" }} />
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
+            >
               Basic Details
             </Typography>
             <Box
@@ -213,34 +218,46 @@ const Profile: React.FC = () => {
               }}
             >
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#666", fontWeight: "bold" }}
+                >
                   Salutation*
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: "#333" }}>
                   {basic?.salutation || "Not specified"}
                 </Typography>
               </Box>
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#666", fontWeight: "bold" }}
+                >
                   First name*
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: "#333" }}>
                   {basic?.firstName || "Not specified"}
                 </Typography>
               </Box>
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#666", fontWeight: "bold" }}
+                >
                   Last name*
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: "#333" }}>
                   {basic?.lastName || "Not specified"}
                 </Typography>
               </Box>
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#666", fontWeight: "bold" }}
+                >
                   Email address*
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: "#333" }}>
                   {basic?.email || "Not specified"}
                 </Typography>
               </Box>
@@ -251,7 +268,10 @@ const Profile: React.FC = () => {
       case "Additional Details":
         return (
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
+            >
               Additional Details
             </Typography>
             {additional && Object.keys(additional).length > 0 ? (
@@ -264,63 +284,85 @@ const Profile: React.FC = () => {
               >
                 {additional.address && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Address
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {additional.address}
                     </Typography>
                   </Box>
                 )}
                 {additional.country && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Country
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {additional.country}
                     </Typography>
                   </Box>
                 )}
                 {additional.postalCode && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Postal Code
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {additional.postalCode}
                     </Typography>
                   </Box>
                 )}
                 {additional.dob && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Date of Birth
                     </Typography>
-                    <Typography variant="body1">{additional.dob}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {additional.dob}
+                    </Typography>
                   </Box>
                 )}
                 {additional.gender && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Gender
                     </Typography>
-                    <Typography variant="body1">{additional.gender}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {additional.gender}
+                    </Typography>
                   </Box>
                 )}
                 {additional.maritalStatus && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Marital Status
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {additional.maritalStatus}
                     </Typography>
                   </Box>
                 )}
               </Box>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#666" }}>
                 No additional details provided yet.
               </Typography>
             )}
@@ -330,7 +372,10 @@ const Profile: React.FC = () => {
       case "Spouse Details":
         return (
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
+            >
               Spouse Details
             </Typography>
             {spouse && Object.keys(spouse).some((key) => spouse[key]) ? (
@@ -343,31 +388,46 @@ const Profile: React.FC = () => {
               >
                 {spouse.salutation && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Salutation
                     </Typography>
-                    <Typography variant="body1">{spouse.salutation}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {spouse.salutation}
+                    </Typography>
                   </Box>
                 )}
                 {spouse.firstName && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       First Name
                     </Typography>
-                    <Typography variant="body1">{spouse.firstName}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {spouse.firstName}
+                    </Typography>
                   </Box>
                 )}
                 {spouse.lastName && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Last Name
                     </Typography>
-                    <Typography variant="body1">{spouse.lastName}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {spouse.lastName}
+                    </Typography>
                   </Box>
                 )}
               </Box>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#666" }}>
                 No spouse details provided yet.
               </Typography>
             )}
@@ -377,7 +437,10 @@ const Profile: React.FC = () => {
       case "Personal Preferences":
         return (
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
+            >
               Personal Preferences
             </Typography>
             {preferences &&
@@ -385,45 +448,59 @@ const Profile: React.FC = () => {
               <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 2 }}>
                 {preferences.hobbies && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Hobbies
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {preferences.hobbies}
                     </Typography>
                   </Box>
                 )}
                 {preferences.sports && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Sports
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {preferences.sports}
                     </Typography>
                   </Box>
                 )}
                 {preferences.music && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Music
                     </Typography>
-                    <Typography variant="body1">{preferences.music}</Typography>
+                    <Typography variant="body1" sx={{ color: "#333" }}>
+                      {preferences.music}
+                    </Typography>
                   </Box>
                 )}
                 {preferences.movies && (
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#666", fontWeight: "bold" }}
+                    >
                       Movies
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: "#333" }}>
                       {preferences.movies}
                     </Typography>
                   </Box>
                 )}
               </Box>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#666" }}>
                 No preferences provided yet.
               </Typography>
             )}
@@ -441,9 +518,23 @@ const Profile: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
         padding: 2,
         position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 70%, rgba(255,255,255,0.08) 0%, transparent 50%)
+          `,
+          zIndex: 1,
+        },
       }}
     >
       {/* Header Component */}
@@ -453,153 +544,171 @@ const Profile: React.FC = () => {
         maxWidth="xl"
         sx={{
           maxWidth: { xs: "100%", sm: "lg", md: "xl" },
-          mt: 8,
+          mt: 10,
+          position: "relative",
+          zIndex: 2,
         }}
       >
-        <Paper
-          elevation={8}
-          sx={{ backgroundColor: "rgba(255, 255, 255, 0.95)", borderRadius: 3 }}
-        >
-          {/* Header */}
+        <Box sx={{ display: "flex", minHeight: "600px", gap: 3 }}>
+          {/* Left Sidebar - Navigation */}
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              p: 3,
-              borderBottom: "1px solid #eee",
+              width: 250,
+              p: 0,
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                {isEditing ? "Edit Profile" : "My Profile"}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {isEditing && (
-                <Button
-                  variant="text"
-                  startIcon={<ArrowBack />}
-                  onClick={handleCancel}
-                  sx={{ color: "#666" }}
-                >
-                  Go back to My Profile
-                </Button>
-              )}
-              {!isEditing && (
-                <Button
-                  variant="text"
-                  startIcon={<Edit />}
-                  onClick={() => setIsEditing(true)}
-                  sx={{ color: "#666" }}
-                >
-                  Edit profile
-                </Button>
-              )}
-            </Box>
+            {sections.map((section) => (
+              <Box
+                key={section}
+                onClick={() => setActiveSection(section)}
+                sx={{
+                  py: 2,
+                  px: 0,
+                  cursor: "pointer",
+                  borderBottom: "1px solid #ccc",
+                  fontWeight: activeSection === section ? "bold" : "normal",
+                  color: "#333",
+                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+                  mb: 1,
+                }}
+              >
+                <Typography variant="body1" sx={{ fontWeight: "inherit" }}>
+                  {section}
+                </Typography>
+              </Box>
+            ))}
           </Box>
 
-          <Box sx={{ display: "flex", minHeight: "600px" }}>
-            {/* Sidebar */}
-            <Box
-              sx={{
-                width: 250,
-                borderRight: "1px solid #eee",
-                p: 2,
-                backgroundColor: "rgba(0, 0, 0, 0.02)",
-              }}
-            >
-              {sections.map((section) => (
-                <Box
-                  key={section}
-                  onClick={() => setActiveSection(section)}
-                  sx={{
-                    py: 1.5,
-                    px: 2,
-                    cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                    backgroundColor:
-                      activeSection === section ? "#e3f2fd" : "transparent",
-                    fontWeight: activeSection === section ? "bold" : "normal",
-                    color: activeSection === section ? "#1976d2" : "inherit",
-                    "&:hover": { backgroundColor: "#f5f5f5" },
-                    borderRadius: 1,
-                    mb: 0.5,
-                  }}
-                >
-                  <Typography variant="body2">{section}</Typography>
-                </Box>
-              ))}
-            </Box>
-
-            {/* Content */}
-            <Box sx={{ flex: 1, p: 4 }}>{renderSectionContent()}</Box>
-          </Box>
-
-          {/* Footer */}
-          {isEditing && (
+          {/* Right Content Area */}
+          <Box sx={{ flex: 1 }}>
+            {/* Profile Header */}
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "flex-end",
-                gap: 2,
-                p: 3,
-                borderTop: "1px solid #eee",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 4,
               }}
             >
-              <Button
-                variant="outlined"
-                onClick={handleCancel}
-                sx={{
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                  borderColor: "#666",
-                  color: "#666",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleSaveAll}
-                sx={{
-                  backgroundColor: "#4A90E2",
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                  "&:hover": { backgroundColor: "#357abd" },
-                }}
-              >
-                Save & Update
-              </Button>
+              <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#333",
+                    fontSize: { xs: "1.5rem", md: "2rem" },
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {isEditing ? "Edit Profile" : "My Profile"}
+                </Typography>
+                <Box
+                  sx={{
+                    flex: 1,
+                    height: "3px",
+                    backgroundColor: "#333",
+                    ml: 3,
+                    mr: 3,
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {isEditing && (
+                  <Button
+                    variant="text"
+                    startIcon={<ArrowBack />}
+                    onClick={handleCancel}
+                    sx={{ color: "#333", textDecoration: "underline" }}
+                  >
+                    Go back to My Profile
+                  </Button>
+                )}
+                {!isEditing && (
+                  <Button
+                    variant="text"
+                    startIcon={<Edit />}
+                    onClick={() => setIsEditing(true)}
+                    sx={{ color: "#333", textDecoration: "underline" }}
+                  >
+                    Edit profile
+                  </Button>
+                )}
+              </Box>
             </Box>
-          )}
 
-          {/* Status messages */}
-          {saveStatus === "success" && (
-            <Box
-              sx={{
-                p: 2,
-                backgroundColor: "#d4edda",
-                color: "#155724",
-                textAlign: "center",
-              }}
-            >
-              Profile saved successfully.
-            </Box>
-          )}
-          {saveStatus === "error" && (
-            <Box
-              sx={{
-                p: 2,
-                backgroundColor: "#f8d7da",
-                color: "#721c24",
-                textAlign: "center",
-              }}
-            >
-              Failed to save profile.
-            </Box>
-          )}
-        </Paper>
+            {/* Content */}
+            <Box sx={{ p: 4 }}>{renderSectionContent()}</Box>
+
+            {/* Footer */}
+            {isEditing && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: 2,
+                  mt: 4,
+                  px: 4,
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  onClick={handleCancel}
+                  sx={{
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    borderColor: "#666",
+                    color: "#666",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAll}
+                  sx={{
+                    backgroundColor: "#666",
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    "&:hover": { backgroundColor: "#555" },
+                  }}
+                >
+                  Save & Update
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        {/* Status messages */}
+        {saveStatus === "success" && (
+          <Box
+            sx={{
+              p: 2,
+              backgroundColor: "rgba(212, 237, 218, 0.9)",
+              color: "#155724",
+              textAlign: "center",
+              mt: 2,
+              borderRadius: 1,
+            }}
+          >
+            Profile saved successfully.
+          </Box>
+        )}
+        {saveStatus === "error" && (
+          <Box
+            sx={{
+              p: 2,
+              backgroundColor: "rgba(248, 215, 218, 0.9)",
+              color: "#721c24",
+              textAlign: "center",
+              mt: 2,
+              borderRadius: 1,
+            }}
+          >
+            Failed to save profile.
+          </Box>
+        )}
       </Container>
     </Box>
   );

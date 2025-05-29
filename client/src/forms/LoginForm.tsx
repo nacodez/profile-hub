@@ -68,7 +68,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography
                 sx={{
-                  color: "white",
+                  color: "#000000",
                   fontSize: "16px",
                   fontWeight: "500",
                   minWidth: "80px",
@@ -99,7 +99,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "white",
+                    color: "#000000",
                     padding: "12px 14px",
                   },
                 }}
@@ -112,7 +112,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography
                 sx={{
-                  color: "white",
+                  color: "#000000",
                   fontSize: "16px",
                   fontWeight: "500",
                   minWidth: "80px",
@@ -138,7 +138,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
                         edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                        sx={{ color: "#000000" }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -160,7 +160,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "white",
+                    color: "#000000",
                     padding: "12px 14px",
                   },
                 }}
@@ -180,15 +180,15 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     onChange={formik.handleChange}
                     size="small"
                     sx={{
-                      color: "rgba(255, 255, 255, 0.7)",
+                      color: "#000000",
                       "&.Mui-checked": {
-                        color: "white",
+                        color: "#000000",
                       },
                     }}
                   />
                 }
                 label={
-                  <span style={{ color: "white", fontSize: "14px" }}>
+                  <span style={{ color: "#000000", fontSize: "14px" }}>
                     Keep me logged in
                   </span>
                 }
@@ -232,7 +232,7 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Typography
                 variant="body2"
-                sx={{ color: "white", fontSize: "14px" }}
+                sx={{ color: "#000000", fontSize: "14px" }}
               >
                 No account?{" "}
                 <Link
@@ -240,9 +240,9 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
                   to="/register"
                   underline="always"
                   sx={{
-                    color: "white",
+                    color: "#000000",
                     fontWeight: "bold",
-                    textDecorationColor: "white",
+                    textDecorationColor: "#000000",
                   }}
                 >
                   Register here.

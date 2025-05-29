@@ -81,9 +81,9 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
       <Box
         sx={{
           padding: "8px 16px",
-          border: "2px solid rgba(255, 255, 255, 0.6)",
+          border: "2px solid #333333",
           borderRadius: 1,
-          color: "white",
+          color: "#333333",
           fontWeight: "bold",
           fontSize: "14px",
           backgroundColor: "transparent",
