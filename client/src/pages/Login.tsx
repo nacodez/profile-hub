@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { Container, Typography, Box, Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Container, Typography, Box } from "@mui/material";
 import LoginForm from "../forms/LoginForm";
 import { useAuth } from "../context/AuthContext";
 
@@ -25,8 +25,7 @@ const LoginPage: React.FC = () => {
         background:
           "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
         padding: 2,
         position: "relative",
         "&::before": {
@@ -45,90 +44,91 @@ const LoginPage: React.FC = () => {
         },
       }}
     >
-      <Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
-        {/* Logo */}
-        <Box sx={{ textAlign: "left", mb: 4 }}>
-          <Box
-            sx={{
-              width: "fit-content",
-              padding: "8px 16px",
-              border: "2px solid rgba(255, 255, 255, 0.6)",
-              borderRadius: 1,
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "14px",
-              backgroundColor: "transparent",
-            }}
-          >
-            LOGO
-          </Box>
+      {/* Logo in top left corner */}
+      <Box sx={{ position: "relative", zIndex: 2, mb: 4 }}>
+        <Box
+          sx={{
+            width: "fit-content",
+            padding: "8px 16px",
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            borderRadius: 1,
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "14px",
+            backgroundColor: "transparent",
+          }}
+        >
+          ProfileHub
         </Box>
+      </Box>
 
-        {/* Welcome Text */}
-        <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              color: "white",
-              fontWeight: "400",
-              fontSize: { xs: "2rem", md: "2.5rem" },
-              mb: 2,
-            }}
-          >
-            Welcome to <span style={{ fontWeight: "bold" }}>myApp</span>
-          </Typography>
+      {/* Center content */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
+          {/* Welcome Text */}
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "white",
+                fontWeight: "400",
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                mb: 2,
+              }}
+            >
+              Welcome to <span style={{ fontWeight: "bold" }}>ProfileHub</span>
+            </Typography>
 
-          {/* Underline */}
-          <Box
-            sx={{
-              width: "60px",
-              height: "3px",
-              backgroundColor: "white",
-              margin: "0 auto",
-            }}
-          />
-        </Box>
-
-        {/* Login Form */}
-        <LoginForm onSuccess={handleSuccess} onError={handleError} />
-
-        {/* Error Message */}
-        {error && (
-          <Box sx={{ mt: 3, textAlign: "center" }}>
+            {/* Underline */}
             <Box
               sx={{
-                backgroundColor: "rgba(0, 0, 0, 0.6)",
-                color: "white",
-                padding: "8px 16px",
-                borderRadius: 1,
-                fontSize: "14px",
-                display: "inline-block",
+                width: "60px",
+                height: "3px",
+                backgroundColor: "white",
+                margin: "0 auto",
               }}
-            >
-              {error}
+            />
+          </Box>
+
+          {/* Centered Login Form Container */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <Box sx={{ width: "100%", maxWidth: "400px" }}>
+              <LoginForm onSuccess={handleSuccess} onError={handleError} />
             </Box>
           </Box>
-        )}
 
-        {/* Register Link */}
-        <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Typography variant="body2" sx={{ color: "white", fontSize: "14px" }}>
-            No account?{" "}
-            <Link
-              component={RouterLink}
-              to="/register"
-              underline="always"
-              sx={{
-                color: "white",
-                fontWeight: "bold",
-                textDecorationColor: "white",
-              }}
-            >
-              Register here.
-            </Link>
-          </Typography>
-        </Box>
-      </Container>
+          {/* Error Message */}
+          {error && (
+            <Box sx={{ mt: 3, textAlign: "center" }}>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  color: "white",
+                  padding: "8px 16px",
+                  borderRadius: 1,
+                  fontSize: "14px",
+                  display: "inline-block",
+                }}
+              >
+                {error}
+              </Box>
+            </Box>
+          )}
+        </Container>
+      </Box>
     </Box>
   );
 };

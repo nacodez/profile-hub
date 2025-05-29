@@ -1,58 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-import {
-  Person,
-  Security,
-  Dashboard,
-  Settings,
-  Menu as MenuIcon,
-  EditNote,
-  Logout,
-} from "@mui/icons-material";
-import { useAuth } from "../context/AuthContext";
+import { Box, Typography, Button, Container, Grid } from "@mui/material";
+import { Person, Security, Dashboard, Settings } from "@mui/icons-material";
+import Header from "../components/Header";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
-    null
-  );
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-  const handleMenuItemClick = (action: string) => {
-    handleMenuClose();
-    switch (action) {
-      case "profile":
-        navigate("/profile");
-        break;
-      case "edit":
-        navigate("/profile");
-        break;
-      case "logout":
-        // Use the logout function from AuthContext instead of manual API call
-        logout();
-        // Remove the manual navigation - let ProtectedRoute handle it
-        break;
-    }
-  };
   return (
     <Box
       sx={{
@@ -63,80 +17,11 @@ const HomePage: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* Header Navigation */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
-        }}
-      >
-        <Container maxWidth="xl">
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              py: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Box
-                sx={{
-                  padding: 1.5,
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                  borderRadius: 2,
-                  color: "#4A90E2",
-                  fontWeight: "bold",
-                  fontSize: "18px",
-                  minWidth: "80px",
-                  textAlign: "center",
-                  mr: 2,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
-              >
-                ProfileHub
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <IconButton onClick={handleMenuClick} sx={{ color: "white" }}>
-                <MenuIcon />
-              </IconButton>
-
-              <Menu
-                anchorEl={menuAnchorEl}
-                open={Boolean(menuAnchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={() => handleMenuItemClick("profile")}>
-                  <ListItemIcon>
-                    <Person fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>My Profile</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("edit")}>
-                  <ListItemIcon>
-                    <EditNote fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Edit Profile</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("logout")}>
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Logout</ListItemText>
-                </MenuItem>
-              </Menu>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
+      {/* Header Component */}
+      <Header variant="home" />
 
       {/* Hero Section */}
-      <Container maxWidth="xl" sx={{ py: 8 }}>
+      <Container maxWidth="xl" sx={{ py: 8, mt: 8 }}>
         <Box sx={{ textAlign: "center", mb: 8 }}>
           <Typography
             variant="h2"

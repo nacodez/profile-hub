@@ -7,29 +7,15 @@ import {
   Paper,
   Button,
   Avatar,
-  IconButton,
   Divider,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
 } from "@mui/material";
-import {
-  Edit,
-  PhotoCamera,
-  Menu as MenuIcon,
-  ArrowBack,
-  Home,
-  Person,
-  EditNote,
-  Logout,
-} from "@mui/icons-material";
+import { Edit, PhotoCamera, ArrowBack } from "@mui/icons-material";
 import BasicDetails from "../forms/BasicDetails";
 import AdditionalDetails from "../forms/AdditionalDetails";
 import SpouseDetails from "../forms/SpouseDetails";
 import Preferences from "../forms/Preferences";
 import axios from "../api/axiosInstance";
-import { useAuth } from "../context/AuthContext"; // Add this import
+import Header from "../components/Header";
 
 // Define interfaces for type safety
 interface BasicDetailsType {
@@ -70,7 +56,6 @@ interface ProfileFormData {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Add this line
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("Basic Details");
   const [formData, setFormData] = useState<ProfileFormData | null>(null);
@@ -78,7 +63,6 @@ const Profile: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">(
     "idle"
   );
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   // Load profile data on component mount
   useEffect(() => {
@@ -132,39 +116,9 @@ const Profile: React.FC = () => {
     });
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
-  const handleMenuItemClick = async (action: string) => {
-    handleMenuClose();
-    switch (action) {
-      case "home":
-        navigate("/");
-        break;
-      case "profile":
-        setIsEditing(false);
-        setActiveSection("Basic Details");
-        break;
-      case "edit":
-        setIsEditing(true);
-        setActiveSection("Basic Details");
-        break;
-      case "logout":
-        try {
-          await logout(); // Use the logout function from AuthContext
-          navigate("/login");
-        } catch (error) {
-          console.error("Logout error:", error);
-          // Force redirect even if logout fails
-          navigate("/login");
-        }
-        break;
-    }
+  const handleProfileEdit = () => {
+    setIsEditing(!isEditing);
+    setActiveSection("Basic Details");
   };
 
   const sections = [
@@ -215,7 +169,6 @@ const Profile: React.FC = () => {
     }
   };
 
-  // NEW: Render only the selected section in view mode
   const renderViewModeBySection = () => {
     const basic = formData?.basicDetails;
     const additional = formData?.additionalDetails;
@@ -490,11 +443,18 @@ const Profile: React.FC = () => {
         minHeight: "100vh",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         padding: 2,
+        position: "relative",
       }}
     >
+      {/* Header Component */}
+      <Header variant="profile" onProfileEdit={handleProfileEdit} />
+
       <Container
         maxWidth="xl"
-        sx={{ maxWidth: { xs: "100%", sm: "lg", md: "xl" } }}
+        sx={{
+          maxWidth: { xs: "100%", sm: "lg", md: "xl" },
+          mt: 8,
+        }}
       >
         <Paper
           elevation={8}
@@ -511,22 +471,6 @@ const Profile: React.FC = () => {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {/* Custom Logo */}
-              <Box
-                sx={{
-                  mr: 2,
-                  padding: 1,
-                  backgroundColor: "#4A90E2",
-                  borderRadius: 2,
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "14px",
-                  minWidth: "60px",
-                  textAlign: "center",
-                }}
-              >
-                ProfileHub
-              </Box>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 {isEditing ? "Edit Profile" : "My Profile"}
               </Typography>
@@ -552,39 +496,6 @@ const Profile: React.FC = () => {
                   Edit profile
                 </Button>
               )}
-              <IconButton onClick={handleMenuClick}>
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={menuAnchorEl}
-                open={Boolean(menuAnchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={() => handleMenuItemClick("home")}>
-                  <ListItemIcon>
-                    <Home fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Home</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("profile")}>
-                  <ListItemIcon>
-                    <Person fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>My Profile</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("edit")}>
-                  <ListItemIcon>
-                    <EditNote fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Edit Profile</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick("logout")}>
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Logout</ListItemText>
-                </MenuItem>
-              </Menu>
             </Box>
           </Box>
 
