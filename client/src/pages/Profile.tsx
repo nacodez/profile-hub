@@ -539,22 +539,29 @@ const Profile: React.FC = () => {
     >
       {/* Header Component */}
       <Header variant="profile" onProfileEdit={handleProfileEdit} />
-
       <Container
-        maxWidth="xl"
+        maxWidth={false} // Remove maxWidth constraint
         sx={{
-          maxWidth: { xs: "100%", sm: "lg", md: "xl" },
+          width: "100%",
           mt: 10,
           position: "relative",
           zIndex: 2,
+          paddingLeft: "16px !important", // Force override MUI's padding
+          paddingRight: "16px !important", // Force override MUI's padding
+          marginLeft: 0, // Remove auto centering
+          marginRight: 0, // Remove auto centering
+          maxWidth: "none", // Remove max-width constraint
         }}
       >
-        <Box sx={{ display: "flex", minHeight: "600px", gap: 3 }}>
+        <Box
+          sx={{ display: "flex", minHeight: "600px", gap: 3, width: "100%" }}
+        >
           {/* Left Sidebar - Navigation */}
           <Box
             sx={{
               width: 250,
               p: 0,
+              flexShrink: 0, // Prevent shrinking
             }}
           >
             {sections.map((section) => (
@@ -580,17 +587,27 @@ const Profile: React.FC = () => {
           </Box>
 
           {/* Right Content Area */}
-          <Box sx={{ flex: 1 }}>
-            {/* Profile Header */}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            {" "}
+            {/* Back to original flex container */}
+            {/* Profile Header - Full Width */}
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 mb: 4,
+                width: "100%",
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
                 <Typography
                   variant="h4"
                   sx={{
@@ -598,6 +615,7 @@ const Profile: React.FC = () => {
                     color: "#333",
                     fontSize: { xs: "1.5rem", md: "2rem" },
                     whiteSpace: "nowrap",
+                    flexShrink: 0,
                   }}
                 >
                   {isEditing ? "Edit Profile" : "My Profile"}
@@ -609,16 +627,28 @@ const Profile: React.FC = () => {
                     backgroundColor: "#333",
                     ml: 3,
                     mr: 3,
+                    minWidth: "20px", // Minimum line width
                   }}
                 />
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  flexShrink: 0,
+                }}
+              >
                 {isEditing && (
                   <Button
                     variant="text"
                     startIcon={<ArrowBack />}
                     onClick={handleCancel}
-                    sx={{ color: "#333", textDecoration: "underline" }}
+                    sx={{
+                      color: "#333",
+                      textDecoration: "underline",
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     Go back to My Profile
                   </Button>
@@ -628,87 +658,79 @@ const Profile: React.FC = () => {
                     variant="text"
                     startIcon={<Edit />}
                     onClick={() => setIsEditing(true)}
-                    sx={{ color: "#333", textDecoration: "underline" }}
+                    sx={{
+                      color: "#333",
+                      textDecoration: "underline",
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     Edit profile
                   </Button>
                 )}
               </Box>
             </Box>
-
-            {/* Content */}
-            <Box sx={{ p: 4 }}>{renderSectionContent()}</Box>
-
-            {/* Footer */}
-            {isEditing && (
+            {/* Content - Centered */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center", // Center the content
+                px: 4,
+              }}
+            >
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: 2,
-                  mt: 4,
-                  px: 4,
+                  width: "100%",
+                  maxWidth: "800px", // Limit form content width
                 }}
               >
-                <Button
-                  variant="outlined"
-                  onClick={handleCancel}
-                  sx={{
-                    textTransform: "uppercase",
-                    fontWeight: "bold",
-                    borderColor: "#666",
-                    color: "#666",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleSaveAll}
-                  sx={{
-                    backgroundColor: "#666",
-                    textTransform: "uppercase",
-                    fontWeight: "bold",
-                    "&:hover": { backgroundColor: "#555" },
-                  }}
-                >
-                  Save & Update
-                </Button>
+                {renderSectionContent()}
+                {isEditing && (
+                  <Box
+                    sx={{
+                      mt: 4, // Add top margin to separate from form content
+                      width: "100%",
+                      maxWidth: "sm", // Match the text field maxWidth
+                      display: "flex",
+                      ml: activeSection === "Basic Details" && 19,
+                      gap: 2,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleSaveAll}
+                      fullWidth
+                      sx={{
+                        backgroundColor: "#666",
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                        py: 1.5, // Add vertical padding to match text field height
+                        "&:hover": { backgroundColor: "#555" },
+                      }}
+                    >
+                      Save & Update
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleCancel}
+                      fullWidth
+                      sx={{
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                        borderColor: "#666",
+                        color: "#666",
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        py: 1.5, // Add vertical padding to match text field height
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                )}
               </Box>
-            )}
+            </Box>
+            {/* Footer - Centered with form content */}
           </Box>
         </Box>
-
-        {/* Status messages */}
-        {saveStatus === "success" && (
-          <Box
-            sx={{
-              p: 2,
-              backgroundColor: "rgba(212, 237, 218, 0.9)",
-              color: "#155724",
-              textAlign: "center",
-              mt: 2,
-              borderRadius: 1,
-            }}
-          >
-            Profile saved successfully.
-          </Box>
-        )}
-        {saveStatus === "error" && (
-          <Box
-            sx={{
-              p: 2,
-              backgroundColor: "rgba(248, 215, 218, 0.9)",
-              color: "#721c24",
-              textAlign: "center",
-              mt: 2,
-              borderRadius: 1,
-            }}
-          >
-            Failed to save profile.
-          </Box>
-        )}
       </Container>
     </Box>
   );

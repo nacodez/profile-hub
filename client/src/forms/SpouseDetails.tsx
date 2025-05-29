@@ -1,15 +1,9 @@
 import React, { useCallback, useRef } from "react";
 import { useFormik } from "formik";
-import {
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  Box,
-  Typography,
-} from "@mui/material";
+import { MenuItem, Box, Typography } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import CustomTextField from "../components/CustomTextField";
+import CustomSelect from "../components/CustomSelect";
 
 interface SpouseDetailsFormValues {
   salutation?: string;
@@ -86,58 +80,49 @@ const SpouseDetails: React.FC<Props> = ({ data, onUpdate }) => {
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={3}
+          sx={{ maxWidth: "sm" }}
+          ml={17}
+        >
           {/* Salutation */}
-          <FormControl fullWidth>
-            <InputLabel id="spouse-salutation-label">Salutation</InputLabel>
-            <Select
-              labelId="spouse-salutation-label"
-              name="salutation"
-              value={formik.values.salutation}
-              onChange={handleSelectChange}
-              onBlur={formik.handleBlur}
-              label="Salutation"
-              sx={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              }}
-            >
-              <MenuItem value="">
-                <em>Select salutation</em>
-              </MenuItem>
-              <MenuItem value="Mr.">Mr.</MenuItem>
-              <MenuItem value="Ms.">Ms.</MenuItem>
-              <MenuItem value="Mrs.">Mrs.</MenuItem>
-            </Select>
-          </FormControl>
+          <CustomSelect
+            label="Salutation"
+            name="salutation"
+            fullWidth
+            value={formik.values.salutation}
+            onChange={handleSelectChange}
+            onBlur={formik.handleBlur}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>Select salutation</em>
+            </MenuItem>
+            <MenuItem value="Mr.">Mr.</MenuItem>
+            <MenuItem value="Ms.">Ms.</MenuItem>
+            <MenuItem value="Mrs.">Mrs.</MenuItem>
+          </CustomSelect>
 
           {/* First Name */}
-          <TextField
+          <CustomTextField
             label="First Name"
             name="firstName"
             fullWidth
             value={formik.values.firstName}
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
 
           {/* Last Name */}
-          <TextField
+          <CustomTextField
             label="Last Name"
             name="lastName"
             fullWidth
             value={formik.values.lastName}
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
         </Box>
       </form>

@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useFormik } from "formik";
-import { TextField, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import CustomTextField from "../components/CustomTextField";
 
 interface PreferencesFormValues {
   hobbies?: string;
@@ -68,9 +69,14 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={3}
+          sx={{ maxWidth: "sm" }}
+        >
           {/* Hobbies and Interests */}
-          <TextField
+          <CustomTextField
             label="Hobbies and Interests"
             name="hobbies"
             fullWidth
@@ -80,15 +86,10 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
             placeholder="Tell us about your hobbies and interests..."
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
 
           {/* Favorite Sport(s) */}
-          <TextField
+          <CustomTextField
             label="Favorite Sport(s)"
             name="sports"
             fullWidth
@@ -96,15 +97,10 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
             placeholder="What sports do you enjoy?"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
 
           {/* Preferred Music Genre(s) */}
-          <TextField
+          <CustomTextField
             label="Preferred Music Genre(s)"
             name="music"
             fullWidth
@@ -112,15 +108,10 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
             placeholder="What music genres do you prefer?"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
 
           {/* Preferred Movie/TV Show(s) */}
-          <TextField
+          <CustomTextField
             label="Preferred Movie/TV Show(s)"
             name="movies"
             fullWidth
@@ -128,11 +119,6 @@ const Preferences: React.FC<Props> = ({ data, onUpdate }) => {
             onChange={handleFieldChange}
             onBlur={formik.handleBlur}
             placeholder="What movies or TV shows do you enjoy?"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-              },
-            }}
           />
         </Box>
       </form>

@@ -1,20 +1,11 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  Box,
-  Typography,
-  FormHelperText,
-  Avatar,
-  Button,
-} from "@mui/material";
+import { MenuItem, Box, Typography, Avatar, Button } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import CustomTextField from "../components/CustomTextField"; // Import the custom component
+import CustomSelect from "../components/CustomSelect"; // Import the custom select component
 
 interface BasicDetailsFormValues {
   salutation?: string;
@@ -119,9 +110,6 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
         >
           Basic Details
         </Typography>
-        <Typography variant="body2" sx={{ color: "#666" }}>
-          Fields marked with * are mandatory field
-        </Typography>
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
@@ -177,39 +165,29 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
             sx={{ maxWidth: "sm" }}
           >
             {/* Salutation */}
-            <FormControl
+            <CustomSelect
+              label="Salutation*"
+              name="salutation"
               fullWidth
+              value={formik.values.salutation}
+              onChange={handleSelectChange}
+              onBlur={formik.handleBlur}
               error={
                 formik.touched.salutation && Boolean(formik.errors.salutation)
               }
+              helperText={formik.touched.salutation && formik.errors.salutation}
+              displayEmpty
             >
-              <InputLabel id="salutation-label">Salutation*</InputLabel>
-              <Select
-                labelId="salutation-label"
-                name="salutation"
-                value={formik.values.salutation}
-                onChange={handleSelectChange}
-                onBlur={formik.handleBlur}
-                label="Salutation*"
-                displayEmpty
-                sx={{
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                }}
-              >
-                <MenuItem value="">
-                  <em>Select salutation</em>
-                </MenuItem>
-                <MenuItem value="Mr.">Mr.</MenuItem>
-                <MenuItem value="Ms.">Ms.</MenuItem>
-                <MenuItem value="Mrs.">Mrs.</MenuItem>
-              </Select>
-              {formik.touched.salutation && formik.errors.salutation && (
-                <FormHelperText>{formik.errors.salutation}</FormHelperText>
-              )}
-            </FormControl>
+              <MenuItem value="">
+                <em>Select salutation</em>
+              </MenuItem>
+              <MenuItem value="Mr.">Mr.</MenuItem>
+              <MenuItem value="Ms.">Ms.</MenuItem>
+              <MenuItem value="Mrs.">Mrs.</MenuItem>
+            </CustomSelect>
 
             {/* First Name */}
-            <TextField
+            <CustomTextField
               label="First name*"
               name="firstName"
               fullWidth
@@ -220,15 +198,10 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 formik.touched.firstName && Boolean(formik.errors.firstName)
               }
               helperText={formik.touched.firstName && formik.errors.firstName}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                },
-              }}
             />
 
             {/* Last Name */}
-            <TextField
+            <CustomTextField
               label="Last name*"
               name="lastName"
               fullWidth
@@ -237,15 +210,10 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
               helperText={formik.touched.lastName && formik.errors.lastName}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                },
-              }}
             />
 
             {/* Email */}
-            <TextField
+            <CustomTextField
               label="Email address*"
               name="email"
               type="email"
@@ -255,11 +223,6 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                },
-              }}
             />
 
             {/* Mandatory field note */}
