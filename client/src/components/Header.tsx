@@ -18,7 +18,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 
 interface HeaderProps {
-  variant?: "home" | "profile";
+  variant?: "home" | "profile" | "login";
   onProfileEdit?: () => void;
 }
 
@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
         right: 0,
         zIndex: 1000,
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: variant === "login" ? "flex-start" : "space-between",
         alignItems: "center",
         p: 2,
       }}
@@ -92,49 +92,51 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
         ProfileHub
       </Box>
 
-      {/* Hamburger Menu */}
-      <Box>
-        <IconButton onClick={handleMenuClick} sx={{ color: "white" }}>
-          <MenuIcon />
-        </IconButton>
+      {/* Hamburger Menu - Only show for non-login pages */}
+      {variant !== "login" && (
+        <Box>
+          <IconButton onClick={handleMenuClick} sx={{ color: "white" }}>
+            <MenuIcon />
+          </IconButton>
 
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleMenuClose}
-          PaperProps={{
-            sx: {
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
-              backdropFilter: "blur(10px)",
-            },
-          }}
-        >
-          <MenuItem onClick={() => handleMenuItemClick("home")}>
-            <ListItemIcon>
-              <Home fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Home</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("profile")}>
-            <ListItemIcon>
-              <Person fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>My Profile</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("edit")}>
-            <ListItemIcon>
-              <EditNote fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Edit Profile</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("logout")}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Logout</ListItemText>
-          </MenuItem>
-        </Menu>
-      </Box>
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(10px)",
+              },
+            }}
+          >
+            <MenuItem onClick={() => handleMenuItemClick("home")}>
+              <ListItemIcon>
+                <Home fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Home</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick("profile")}>
+              <ListItemIcon>
+                <Person fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>My Profile</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick("edit")}>
+              <ListItemIcon>
+                <EditNote fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Edit Profile</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick("logout")}>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Logout</ListItemText>
+            </MenuItem>
+          </Menu>
+        </Box>
+      )}
     </Box>
   );
 };

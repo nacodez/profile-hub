@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { Container, Typography, Box, Paper, Link } from "@mui/material";
+import { Container, Typography, Box, Link } from "@mui/material";
 import RegisterForm from "../forms/RegisterForm";
+import Header from "../components/Header";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string>("");
 
   const handleSuccess = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   const handleError = (errorMessage: string) => {
@@ -19,88 +20,121 @@ const RegisterPage: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background:
+          "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
         padding: 2,
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 70%, rgba(255,255,255,0.08) 0%, transparent 50%)
+          `,
+          zIndex: 1,
+        },
       }}
     >
-      <Container maxWidth="sm">
-        <Paper
-          elevation={8}
-          sx={{
-            padding: 4,
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(10px)",
-            borderRadius: 3,
-          }}
-        >
-          {/* Custom Logo */}
-          <Box sx={{ textAlign: "left", mb: 3 }}>
-            <Box
+      {/* Header Component - Login variant (no hamburger menu) */}
+      <Header variant="login" />
+
+      {/* Center content */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mt: 8, // Add margin top to account for header
+        }}
+      >
+        <Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
+          {/* Welcome Text */}
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Typography
+              variant="h4"
               sx={{
-                padding: 1.5,
-                backgroundColor: "#4A90E2",
-                borderRadius: 2,
                 color: "white",
-                fontWeight: "bold",
-                fontSize: "16px",
-                minWidth: "80px",
-                textAlign: "center",
-                display: "inline-block",
+                fontWeight: "400",
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                mb: 2,
               }}
             >
-              ProfileHub
+              Create Your <span style={{ fontWeight: "bold" }}>Account</span>
+            </Typography>
+
+            {/* Underline */}
+            <Box
+              sx={{
+                width: "60px",
+                height: "3px",
+                backgroundColor: "white",
+                margin: "0 auto",
+              }}
+            />
+          </Box>
+
+          {/* Centered Register Form Container */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <Box sx={{ width: "100%", maxWidth: "400px" }}>
+              <RegisterForm onSuccess={handleSuccess} onError={handleError} />
             </Box>
           </Box>
 
-          <Typography
-            variant="h4"
-            gutterBottom
-            sx={{
-              textAlign: "center",
-              fontWeight: "bold",
-              mb: 3,
-              color: "#333",
-            }}
-          >
-            Create Account
-          </Typography>
-
+          {/* Error Message */}
           {error && (
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="body2"
+            <Box sx={{ mt: 3, textAlign: "center" }}>
+              <Box
                 sx={{
-                  backgroundColor: "#f44336",
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
                   color: "white",
                   padding: "8px 16px",
                   borderRadius: 1,
-                  textAlign: "center",
                   fontSize: "14px",
+                  display: "inline-block",
                 }}
               >
                 {error}
-              </Typography>
+              </Box>
             </Box>
           )}
 
-          <RegisterForm onSuccess={handleSuccess} onError={handleError} />
-
-          <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
-            Already have an account?{" "}
-            <Link
-              component={RouterLink}
-              to="/"
-              underline="hover"
-              sx={{ fontWeight: "bold", color: "#4A90E2" }}
+          {/* Login Link */}
+          <Box sx={{ textAlign: "center", mt: 3 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: "white", fontSize: "14px" }}
             >
-              Login here.
-            </Link>
-          </Typography>
-        </Paper>
-      </Container>
+              Already have an account?{" "}
+              <Link
+                component={RouterLink}
+                to="/login"
+                underline="always"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textDecorationColor: "white",
+                }}
+              >
+                Login here.
+              </Link>
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
     </Box>
   );
 };

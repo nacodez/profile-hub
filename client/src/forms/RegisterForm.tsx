@@ -7,6 +7,7 @@ import {
   Box,
   IconButton,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axiosInstance from "../api/axiosInstance";
@@ -70,114 +71,228 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={2}>
-        <TextField
-          label="User ID"
-          name="userId"
-          fullWidth
-          variant="outlined"
-          value={formik.values.userId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.userId && Boolean(formik.errors.userId)}
-          helperText={formik.touched.userId && formik.errors.userId}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            },
-          }}
-        />
+    <Box sx={{ width: "100%" }}>
+      <form onSubmit={formik.handleSubmit}>
+        <Box display="flex" flexDirection="column" gap={2.5}>
+          {/* User ID Field */}
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Typography
+                sx={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  minWidth: "120px",
+                }}
+              >
+                User ID*
+              </Typography>
+              <TextField
+                name="userId"
+                fullWidth
+                variant="outlined"
+                value={formik.values.userId}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.userId && Boolean(formik.errors.userId)}
+                helperText={formik.touched.userId && formik.errors.userId}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: 1,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.5)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.7)",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                    padding: "12px 14px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "rgba(255, 255, 255, 0.9)",
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-        <TextField
-          label="Password"
-          name="password"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          variant="outlined"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleShowPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            },
-          }}
-        />
+          {/* Password Field */}
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Typography
+                sx={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  minWidth: "120px",
+                }}
+              >
+                Password*
+              </Typography>
+              <TextField
+                name="password"
+                type={showPassword ? "text" : "password"}
+                fullWidth
+                variant="outlined"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleShowPassword}
+                        edge="end"
+                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: 1,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.5)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.7)",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                    padding: "12px 14px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "rgba(255, 255, 255, 0.9)",
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-        <TextField
-          label="Confirm Password"
-          name="confirmPassword"
-          type={showConfirmPassword ? "text" : "password"}
-          fullWidth
-          variant="outlined"
-          value={formik.values.confirmPassword}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={
-            formik.touched.confirmPassword &&
-            Boolean(formik.errors.confirmPassword)
-          }
-          helperText={
-            formik.touched.confirmPassword && formik.errors.confirmPassword
-          }
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle confirm password visibility"
-                  onClick={handleShowConfirmPassword}
-                  edge="end"
-                >
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            },
-          }}
-        />
+          {/* Confirm Password Field */}
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Typography
+                sx={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  minWidth: "120px",
+                }}
+              >
+                Confirm Password*
+              </Typography>
+              <TextField
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                fullWidth
+                variant="outlined"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                helperText={
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle confirm password visibility"
+                        onClick={handleShowConfirmPassword}
+                        edge="end"
+                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: 1,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.5)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.7)",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                    padding: "12px 14px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "rgba(255, 255, 255, 0.9)",
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!formik.isValid || formik.isSubmitting}
-          sx={{
-            backgroundColor: "#000",
-            color: "white",
-            fontWeight: "bold",
-            textTransform: "uppercase",
-            padding: "12px",
-            "&:hover": {
-              backgroundColor: "#333",
-            },
-            "&:disabled": {
-              backgroundColor: "#ccc",
-            },
-          }}
-        >
-          Register
-        </Button>
-      </Box>
-    </form>
+          {/* Register Button - Half width, aligned with textboxes */}
+          <Box sx={{ width: "100%", mt: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Box sx={{ minWidth: "120px" }}></Box>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={!formik.isValid || formik.isSubmitting}
+                sx={{
+                  backgroundColor: "#000",
+                  color: "white",
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                  padding: "14px 40px",
+                  fontSize: "16px",
+                  borderRadius: 1,
+                  width: "50%",
+                  "&:hover": {
+                    backgroundColor: "#333",
+                  },
+                  "&:disabled": {
+                    backgroundColor: "#666",
+                    color: "#ccc",
+                  },
+                }}
+              >
+                Register
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </form>
+    </Box>
   );
 };
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Typography, Box } from "@mui/material";
 import LoginForm from "../forms/LoginForm";
 import { useAuth } from "../context/AuthContext";
+import Header from "../components/Header";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,23 +45,8 @@ const LoginPage: React.FC = () => {
         },
       }}
     >
-      {/* Logo in top left corner */}
-      <Box sx={{ position: "relative", zIndex: 2, mb: 4 }}>
-        <Box
-          sx={{
-            width: "fit-content",
-            padding: "8px 16px",
-            border: "2px solid rgba(255, 255, 255, 0.6)",
-            borderRadius: 1,
-            color: "white",
-            fontWeight: "bold",
-            fontSize: "14px",
-            backgroundColor: "transparent",
-          }}
-        >
-          ProfileHub
-        </Box>
-      </Box>
+      {/* Header Component - Login variant (no hamburger menu) */}
+      <Header variant="login" />
 
       {/* Center content */}
       <Box
@@ -69,6 +55,7 @@ const LoginPage: React.FC = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          mt: 8, // Add margin top to account for header
         }}
       >
         <Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
