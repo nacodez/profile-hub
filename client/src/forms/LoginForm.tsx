@@ -59,6 +59,11 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
     setShowPassword(!showPassword);
   };
 
+  // Check if all mandatory fields are filled and valid
+  const isMandatoryFieldsFilled =
+    formik.values.userId && formik.values.password;
+  const isFormValid = formik.isValid && isMandatoryFieldsFilled;
+
   return (
     <Box sx={{ width: "100%" }}>
       <form onSubmit={formik.handleSubmit}>
@@ -196,34 +201,60 @@ const LoginForm: React.FC<Props> = ({ onSuccess, onError }) => {
             </Box>
           </Box>
 
-          {/* Login Button - Half width, aligned with textboxes */}
+          {/* Login and Cancel Buttons */}
           <Box sx={{ width: "100%" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Box sx={{ minWidth: "80px" }}></Box>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={!formik.isValid || formik.isSubmitting}
-                sx={{
-                  backgroundColor: "#000",
-                  color: "white",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  padding: "14px 40px",
-                  fontSize: "16px",
-                  borderRadius: 1,
-                  width: "50%",
-                  "&:hover": {
-                    backgroundColor: "#333",
-                  },
-                  "&:disabled": {
-                    backgroundColor: "#666",
-                    color: "#ccc",
-                  },
-                }}
-              >
-                LOGIN
-              </Button>
+              <Box sx={{ display: "flex", gap: 2, flex: 1 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={!isFormValid || formik.isSubmitting}
+                  sx={{
+                    backgroundColor: "#000",
+                    color: "white",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    padding: "12px 16px",
+                    fontSize: "16px",
+                    borderRadius: 1,
+                    flex: 1,
+                    "&:hover": {
+                      backgroundColor: "#333",
+                    },
+                    "&:disabled": {
+                      backgroundColor: "#666",
+                      color: "#ccc",
+                    },
+                  }}
+                >
+                  LOGIN
+                </Button>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => {
+                    formik.resetForm();
+                    setShowPassword(false);
+                  }}
+                  sx={{
+                    borderColor: "#000",
+                    color: "#000",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    padding: "12px 16px",
+                    fontSize: "16px",
+                    borderRadius: 1,
+                    flex: 1,
+                    "&:hover": {
+                      borderColor: "#333",
+                      backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    },
+                  }}
+                >
+                  CANCEL
+                </Button>
+              </Box>
             </Box>
           </Box>
 

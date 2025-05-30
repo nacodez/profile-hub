@@ -60,7 +60,7 @@ const RegisterPage: React.FC = () => {
             <Typography
               variant="h4"
               sx={{
-                color: "white",
+                color: "#333333",
                 fontWeight: "400",
                 fontSize: { xs: "2rem", md: "2.5rem" },
                 mb: 2,
@@ -74,7 +74,7 @@ const RegisterPage: React.FC = () => {
               sx={{
                 width: "60px",
                 height: "3px",
-                backgroundColor: "white",
+                backgroundColor: "#333333",
                 margin: "0 auto",
               }}
             />
@@ -99,7 +99,7 @@ const RegisterPage: React.FC = () => {
               <Box
                 sx={{
                   backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  color: "white",
+                  color: "#333333",
                   padding: "8px 16px",
                   borderRadius: 1,
                   fontSize: "14px",
@@ -115,7 +115,7 @@ const RegisterPage: React.FC = () => {
           <Box sx={{ textAlign: "center", mt: 3 }}>
             <Typography
               variant="body2"
-              sx={{ color: "white", fontSize: "14px" }}
+              sx={{ color: "#333333", fontSize: "14px" }}
             >
               Already have an account?{" "}
               <Link
@@ -123,9 +123,9 @@ const RegisterPage: React.FC = () => {
                 to="/login"
                 underline="always"
                 sx={{
-                  color: "white",
+                  color: "#333333",
                   fontWeight: "bold",
-                  textDecorationColor: "white",
+                  textDecorationColor: "#333333",
                 }}
               >
                 Login here.

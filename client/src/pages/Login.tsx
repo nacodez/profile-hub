@@ -12,7 +12,7 @@ const LoginPage: React.FC = () => {
 
   const handleSuccess = () => {
     login();
-    navigate("/");
+    navigate("/profile"); // Navigate directly to profile page as per requirement
   };
 
   const handleError = (errorMessage: string) => {

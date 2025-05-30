@@ -18,12 +18,18 @@ const AppRoutes = () => {
       {/* Public Routes */}
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
+        element={
+          !isAuthenticated ? <LoginPage /> : <Navigate to="/profile" replace />
+        }
       />
       <Route
         path="/register"
         element={
-          isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />
+          !isAuthenticated ? (
+            <RegisterPage />
+          ) : (
+            <Navigate to="/profile" replace />
+          )
         }
       />
 

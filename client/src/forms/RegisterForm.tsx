@@ -70,6 +70,13 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  // Check if all mandatory fields are filled and valid
+  const isMandatoryFieldsFilled =
+    formik.values.userId &&
+    formik.values.password &&
+    formik.values.confirmPassword;
+  const isFormValid = formik.isValid && isMandatoryFieldsFilled;
+
   return (
     <Box sx={{ width: "100%" }}>
       <form onSubmit={formik.handleSubmit}>
@@ -79,7 +86,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography
                 sx={{
-                  color: "white",
+                  color: "#333333",
                   fontSize: "16px",
                   fontWeight: "500",
                   minWidth: "120px",
@@ -111,7 +118,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "white",
+                    color: "#333333",
                     padding: "12px 14px",
                   },
                   "& .MuiFormHelperText-root": {
@@ -127,7 +134,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography
                 sx={{
-                  color: "white",
+                  color: "#333333",
                   fontSize: "16px",
                   fontWeight: "500",
                   minWidth: "120px",
@@ -154,7 +161,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
                         aria-label="toggle password visibility"
                         onClick={handleShowPassword}
                         edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                        sx={{ color: "#333333" }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -176,7 +183,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "white",
+                    color: "#333333",
                     padding: "12px 14px",
                   },
                   "& .MuiFormHelperText-root": {
@@ -192,7 +199,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography
                 sx={{
-                  color: "white",
+                  color: "#333333",
                   fontSize: "16px",
                   fontWeight: "500",
                   minWidth: "120px",
@@ -223,7 +230,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
                         aria-label="toggle confirm password visibility"
                         onClick={handleShowConfirmPassword}
                         edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                        sx={{ color: "#333333" }}
                       >
                         {showConfirmPassword ? (
                           <VisibilityOff />
@@ -249,7 +256,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "white",
+                    color: "#333333",
                     padding: "12px 14px",
                   },
                   "& .MuiFormHelperText-root": {
@@ -260,34 +267,61 @@ const RegisterForm: React.FC<Props> = ({ onSuccess, onError }) => {
             </Box>
           </Box>
 
-          {/* Register Button - Half width, aligned with textboxes */}
+          {/* Register and Cancel Buttons */}
           <Box sx={{ width: "100%", mt: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Box sx={{ minWidth: "120px" }}></Box>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={!formik.isValid || formik.isSubmitting}
-                sx={{
-                  backgroundColor: "#000",
-                  color: "white",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  padding: "14px 40px",
-                  fontSize: "16px",
-                  borderRadius: 1,
-                  width: "50%",
-                  "&:hover": {
-                    backgroundColor: "#333",
-                  },
-                  "&:disabled": {
-                    backgroundColor: "#666",
-                    color: "#ccc",
-                  },
-                }}
-              >
-                Register
-              </Button>
+              <Box sx={{ display: "flex", gap: 2, flex: 1 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={!isFormValid || formik.isSubmitting}
+                  sx={{
+                    backgroundColor: "#000",
+                    color: "#333333",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    padding: "14px 20px",
+                    fontSize: "16px",
+                    borderRadius: 1,
+                    flex: 1,
+                    "&:hover": {
+                      backgroundColor: "#333",
+                    },
+                    "&:disabled": {
+                      backgroundColor: "#666",
+                      color: "#ccc",
+                    },
+                  }}
+                >
+                  Register
+                </Button>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => {
+                    formik.resetForm();
+                    setShowPassword(false);
+                    setShowConfirmPassword(false);
+                  }}
+                  sx={{
+                    borderColor: "#333",
+                    color: "#333333",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    padding: "14px 20px",
+                    fontSize: "16px",
+                    borderRadius: 1,
+                    flex: 1,
+                    "&:hover": {
+                      borderColor: "#333",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  }}
+                >
+                  CANCEL
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Box>
