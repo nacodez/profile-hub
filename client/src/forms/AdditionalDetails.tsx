@@ -189,11 +189,6 @@ const AdditionalDetails: React.FC<Props> = ({ data, onUpdate }) => {
             <MenuItem value="Divorced">Divorced</MenuItem>
             <MenuItem value="Widowed">Widowed</MenuItem>
           </CustomSelect>
-
-          {/* Mandatory field note */}
-          <Typography variant="body2" sx={{ color: "#666", fontSize: "12px" }}>
-            * Mandatory field
-          </Typography>
         </Box>
       </form>
     </Box>

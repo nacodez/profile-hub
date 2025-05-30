@@ -49,6 +49,9 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
           "& .MuiInputBase-input": {
             padding: "12px 14px",
           },
+          "& .MuiInputBase-inputMultiline": {
+            padding: "0px !important", // Override multiline padding
+          },
           ...sx,
         }}
       />

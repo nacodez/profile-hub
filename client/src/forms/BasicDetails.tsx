@@ -224,14 +224,6 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
             />
-
-            {/* Mandatory field note */}
-            <Typography
-              variant="body2"
-              sx={{ color: "#666", fontSize: "12px" }}
-            >
-              * Mandatory field
-            </Typography>
           </Box>
         </Box>
       </form>

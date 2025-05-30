@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
             variant="h2"
             sx={{
               fontWeight: "bold",
-              color: "white",
+              color: "#333333",
               mb: 3,
               textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
               fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
@@ -37,7 +37,7 @@ const HomePage: React.FC = () => {
           <Typography
             variant="h5"
             sx={{
-              color: "rgba(255, 255, 255, 0.9)",
+              color: "#333333",
               mb: 4,
               maxWidth: "800px",
               mx: "auto",
@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/profile")} // This stays the same (view mode)
               sx={{
                 backgroundColor: "rgba(255, 255, 255, 0.9)",
                 color: "#4A90E2",
@@ -69,7 +69,8 @@ const HomePage: React.FC = () => {
                 py: 1.5,
                 fontSize: "1.1rem",
                 "&:hover": {
-                  backgroundColor: "white",
+                  backgroundColor: "#333333",
+                  color: "white",
                   transform: "translateY(-2px)",
                 },
                 transition: "all 0.3s ease",
@@ -80,16 +81,18 @@ const HomePage: React.FC = () => {
             <Button
               variant="outlined"
               size="large"
-              onClick={() => navigate("/profile")}
+              onClick={() =>
+                navigate("/profile", { state: { editMode: true } })
+              } // Add edit mode state
               sx={{
-                color: "white",
-                borderColor: "rgba(255, 255, 255, 0.7)",
+                color: "#333333",
+                borderColor: "#333333",
                 fontWeight: "bold",
                 px: 4,
                 py: 1.5,
                 fontSize: "1.1rem",
                 "&:hover": {
-                  borderColor: "white",
+                  borderColor: "#333333",
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                   transform: "translateY(-2px)",
                 },
@@ -111,7 +114,7 @@ const HomePage: React.FC = () => {
                 borderRadius: 3,
                 p: 4,
                 textAlign: "center",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid #333333",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
@@ -119,14 +122,14 @@ const HomePage: React.FC = () => {
                 },
               }}
             >
-              <Person sx={{ fontSize: 50, color: "white", mb: 2 }} />
+              <Person sx={{ fontSize: 50, color: "#333333", mb: 2 }} />
               <Typography
                 variant="h6"
-                sx={{ color: "white", fontWeight: "bold", mb: 2 }}
+                sx={{ color: "#333333", fontWeight: "bold", mb: 2 }}
               >
                 Personal Info
               </Typography>
-              <Typography sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              <Typography sx={{ color: "#333333" }}>
                 Manage your basic details, contact information, and personal
                 preferences securely.
               </Typography>
@@ -141,7 +144,7 @@ const HomePage: React.FC = () => {
                 borderRadius: 3,
                 p: 4,
                 textAlign: "center",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid #333333",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
@@ -149,16 +152,16 @@ const HomePage: React.FC = () => {
                 },
               }}
             >
-              <Security sx={{ fontSize: 50, color: "white", mb: 2 }} />
+              <Security sx={{ fontSize: 50, color: "#333333", mb: 2 }} />
               <Typography
                 variant="h6"
-                sx={{ color: "white", fontWeight: "bold", mb: 2 }}
+                sx={{ color: "#333333", fontWeight: "bold", mb: 2 }}
               >
                 Secure & Private
               </Typography>
-              <Typography sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
-                Your data is protected with enterprise-grade security and
-                privacy controls.
+              <Typography sx={{ color: "#333333" }}>
+                Your data is protected with enterprise-grade efficient security
+                and privacy controls.
               </Typography>
             </Box>
           </Grid>
@@ -171,7 +174,7 @@ const HomePage: React.FC = () => {
                 borderRadius: 3,
                 p: 4,
                 textAlign: "center",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid #333333",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
@@ -179,14 +182,14 @@ const HomePage: React.FC = () => {
                 },
               }}
             >
-              <Dashboard sx={{ fontSize: 50, color: "white", mb: 2 }} />
+              <Dashboard sx={{ fontSize: 50, color: "#333333", mb: 2 }} />
               <Typography
                 variant="h6"
-                sx={{ color: "white", fontWeight: "bold", mb: 2 }}
+                sx={{ color: "#333333", fontWeight: "bold", mb: 2 }}
               >
                 Easy Management
               </Typography>
-              <Typography sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              <Typography sx={{ color: "#333333" }}>
                 Intuitive interface makes managing your profile information
                 simple and efficient.
               </Typography>
@@ -201,7 +204,7 @@ const HomePage: React.FC = () => {
                 borderRadius: 3,
                 p: 4,
                 textAlign: "center",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid #333333",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
@@ -209,14 +212,14 @@ const HomePage: React.FC = () => {
                 },
               }}
             >
-              <Settings sx={{ fontSize: 50, color: "white", mb: 2 }} />
+              <Settings sx={{ fontSize: 50, color: "#333333", mb: 2 }} />
               <Typography
                 variant="h6"
-                sx={{ color: "white", fontWeight: "bold", mb: 2 }}
+                sx={{ color: "#333333", fontWeight: "bold", mb: 2 }}
               >
                 Customizable
               </Typography>
-              <Typography sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              <Typography sx={{ color: "#333333" }}>
                 Tailor your profile sections and preferences to match your
                 specific needs.
               </Typography>

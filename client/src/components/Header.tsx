@@ -19,7 +19,7 @@ import { useAuth } from "../context/AuthContext";
 
 interface HeaderProps {
   variant?: "home" | "profile" | "login";
-  onProfileEdit?: () => void;
+  onProfileEdit?: (mode?: "view" | "edit") => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
@@ -43,16 +43,16 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
         break;
       case "profile":
         if (variant === "profile" && onProfileEdit) {
-          // On profile page, reset to view mode
-          onProfileEdit();
+          // Always go to view mode
+          onProfileEdit("view");
         } else {
-          // Navigate to profile page
           navigate("/profile");
         }
         break;
       case "edit":
         if (variant === "profile" && onProfileEdit) {
-          onProfileEdit();
+          // Always go to edit mode
+          onProfileEdit("edit");
         } else {
           navigate("/profile");
         }
@@ -83,11 +83,16 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
           padding: "8px 16px",
           border: "2px solid #333333",
           borderRadius: 1,
-          color: "#333333",
+          color: "#000000",
           fontWeight: "bold",
           fontSize: "14px",
           backgroundColor: "transparent",
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+          },
         }}
+        onClick={() => navigate("/")}
       >
         ProfileHub
       </Box>
@@ -95,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ variant = "home", onProfileEdit }) => {
       {/* Hamburger Menu - Only show for non-login pages */}
       {variant !== "login" && (
         <Box>
-          <IconButton onClick={handleMenuClick} sx={{ color: "white" }}>
+          <IconButton onClick={handleMenuClick} sx={{ color: "#333333" }}>
             <MenuIcon />
           </IconButton>
 

@@ -85,7 +85,6 @@ const SpouseDetails: React.FC<Props> = ({ data, onUpdate }) => {
           flexDirection="column"
           gap={3}
           sx={{ maxWidth: "sm" }}
-          ml={17}
         >
           {/* Salutation */}
           <CustomSelect

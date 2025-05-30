@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  Avatar,
-  Divider,
-} from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Container, Box, Typography, Button, Avatar } from "@mui/material";
 import { Edit, PhotoCamera, ArrowBack } from "@mui/icons-material";
 import BasicDetails from "../forms/BasicDetails";
 import AdditionalDetails from "../forms/AdditionalDetails";
@@ -55,6 +48,7 @@ interface ProfileFormData {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("Basic Details");
   const [formData, setFormData] = useState<ProfileFormData | null>(null);
@@ -81,6 +75,14 @@ const Profile: React.FC = () => {
 
     fetchProfile();
   }, [navigate]);
+
+  useEffect(() => {
+    const state = location.state as { editMode?: boolean };
+    if (state?.editMode) {
+      setIsEditing(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const updateField = <K extends keyof ProfileFormData>(
     section: K,
@@ -110,13 +112,22 @@ const Profile: React.FC = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
+    // Clear any navigation state
+    window.history.replaceState({}, document.title);
     axios.get("/profile").then((res) => {
       setFormData(res.data || {});
     });
   };
 
-  const handleProfileEdit = () => {
-    setIsEditing(!isEditing);
+  const handleProfileEdit = (mode?: "view" | "edit") => {
+    if (mode === "view") {
+      setIsEditing(false);
+    } else if (mode === "edit") {
+      setIsEditing(true);
+    } else {
+      // Default behavior (for the Edit profile button on the page)
+      setIsEditing(!isEditing);
+    }
     setActiveSection("Basic Details");
   };
 
@@ -168,350 +179,173 @@ const Profile: React.FC = () => {
     }
   };
 
+  // Replace the renderViewModeBySection function with this updated version:
+
   const renderViewModeBySection = () => {
     const basic = formData?.basicDetails;
     const additional = formData?.additionalDetails;
     const spouse = formData?.spouseDetails;
     const preferences = formData?.preferences;
 
-    switch (activeSection) {
-      case "Basic Details":
-        return (
-          <Box>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+    // Define field configurations for each section
+    const sectionConfigs = {
+      "Basic Details": {
+        title: "Basic Details",
+        description: undefined,
+        hasImage: true,
+        data: basic,
+        fields: [
+          { key: "salutation", label: "Salutation*" },
+          { key: "firstName", label: "First name*" },
+          { key: "lastName", label: "Last name*" },
+          { key: "email", label: "Email address*" },
+        ],
+        emptyMessage: "No basic details provided yet.",
+      },
+      "Additional Details": {
+        title: "Additional Details",
+        description: undefined,
+        hasImage: false,
+        data: additional,
+        fields: [
+          { key: "address", label: "Home Address" },
+          { key: "country", label: "Country" },
+          { key: "postalCode", label: "Postal Code*" },
+          { key: "dob", label: "Date of Birth*" },
+          { key: "gender", label: "Gender" },
+          { key: "maritalStatus", label: "Marital Status" },
+        ],
+        emptyMessage: "No additional details provided yet.",
+      },
+      "Spouse Details": {
+        title: "Spouse Details",
+        description: "Please provide your spouse's information",
+        hasImage: false,
+        data: spouse,
+        fields: [
+          { key: "salutation", label: "Salutation" },
+          { key: "firstName", label: "First Name" },
+          { key: "lastName", label: "Last Name" },
+        ],
+        emptyMessage: "No spouse details provided yet.",
+      },
+      "Personal Preferences": {
+        title: "Personal Preferences",
+        description: "Tell us about your interests and preferences",
+        hasImage: false,
+        data: preferences,
+        fields: [
+          { key: "hobbies", label: "Hobbies and Interests" },
+          { key: "sports", label: "Favorite Sport(s)" },
+          { key: "music", label: "Preferred Music Genre(s)" },
+          { key: "movies", label: "Preferred Movie/TV Show(s)" },
+        ],
+        emptyMessage: "No preferences provided yet.",
+      },
+    };
+
+    const config = sectionConfigs[activeSection as keyof typeof sectionConfigs];
+    if (!config) return null;
+
+    const hasData =
+      config.data &&
+      Object.keys(config.data).some(
+        (key) => (config.data as Record<string, unknown>)[key]
+      );
+
+    return (
+      <Box>
+        {/* Section Header */}
+        <Box sx={{ mb: 3 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", mb: 1, color: "#333" }}
+          >
+            {config.title}
+          </Typography>
+          {config.description && (
+            <Typography variant="body2" sx={{ color: "#666" }}>
+              {config.description}
+            </Typography>
+          )}
+        </Box>
+
+        {/* Content Layout */}
+        <Box display="flex" gap={4} alignItems="flex-start">
+          {/* Profile Image - Only for Basic Details */}
+          {config.hasImage && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 1,
+                minWidth: "120px",
+              }}
+            >
               <Avatar
                 sx={{
                   width: 80,
                   height: 80,
-                  mr: 3,
                   backgroundColor: "#4A90E2",
                 }}
               >
                 <PhotoCamera />
               </Avatar>
-              <Box>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", color: "#333" }}
-                >
-                  {basic?.firstName
-                    ? `${basic.firstName} ${basic.lastName || ""}`
-                    : "User Name"}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
-                  {basic?.email}
-                </Typography>
-              </Box>
-            </Box>
-            <Divider sx={{ my: 2, borderColor: "#ddd" }} />
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
-            >
-              Basic Details
-            </Typography>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: 2,
-              }}
-            >
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#666", fontWeight: "bold" }}
-                >
-                  Salutation*
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#333" }}>
-                  {basic?.salutation || "Not specified"}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#666", fontWeight: "bold" }}
-                >
-                  First name*
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#333" }}>
-                  {basic?.firstName || "Not specified"}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#666", fontWeight: "bold" }}
-                >
-                  Last name*
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#333" }}>
-                  {basic?.lastName || "Not specified"}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#666", fontWeight: "bold" }}
-                >
-                  Email address*
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#333" }}>
-                  {basic?.email || "Not specified"}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        );
-
-      case "Additional Details":
-        return (
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
-            >
-              Additional Details
-            </Typography>
-            {additional && Object.keys(additional).length > 0 ? (
-              <Box
+              <Typography
+                variant="body2"
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                  gap: 2,
+                  color: "#333",
+                  textDecoration: "underline",
+                  fontSize: "14px",
                 }}
               >
-                {additional.address && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Address
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.address}
-                    </Typography>
-                  </Box>
-                )}
-                {additional.country && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Country
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.country}
-                    </Typography>
-                  </Box>
-                )}
-                {additional.postalCode && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Postal Code
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.postalCode}
-                    </Typography>
-                  </Box>
-                )}
-                {additional.dob && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Date of Birth
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.dob}
-                    </Typography>
-                  </Box>
-                )}
-                {additional.gender && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Gender
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.gender}
-                    </Typography>
-                  </Box>
-                )}
-                {additional.maritalStatus && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Marital Status
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {additional.maritalStatus}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
+                Profile Image
+              </Typography>
+            </Box>
+          )}
+
+          {/* Form Data */}
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap={3}
+            flex={1}
+            sx={{ maxWidth: "sm" }}
+          >
+            {hasData ? (
+              <>
+                {config.fields.map((field) => {
+                  const value = (config.data as Record<string, unknown>)?.[
+                    field.key
+                  ];
+                  if (!value) return null;
+
+                  return (
+                    <Box key={field.key}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#333", fontWeight: "800", mb: 0.5 }}
+                      >
+                        {field.label}
+                      </Typography>
+                      <Typography variant="body1" sx={{ color: "#333" }}>
+                        {String(value)}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </>
             ) : (
               <Typography variant="body2" sx={{ color: "#666" }}>
-                No additional details provided yet.
+                {config.emptyMessage}
               </Typography>
             )}
           </Box>
-        );
-
-      case "Spouse Details":
-        return (
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
-            >
-              Spouse Details
-            </Typography>
-            {spouse && Object.keys(spouse).some((key) => spouse[key]) ? (
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                  gap: 2,
-                }}
-              >
-                {spouse.salutation && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Salutation
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {spouse.salutation}
-                    </Typography>
-                  </Box>
-                )}
-                {spouse.firstName && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      First Name
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {spouse.firstName}
-                    </Typography>
-                  </Box>
-                )}
-                {spouse.lastName && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Last Name
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {spouse.lastName}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            ) : (
-              <Typography variant="body2" sx={{ color: "#666" }}>
-                No spouse details provided yet.
-              </Typography>
-            )}
-          </Box>
-        );
-
-      case "Personal Preferences":
-        return (
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
-            >
-              Personal Preferences
-            </Typography>
-            {preferences &&
-            Object.keys(preferences).some((key) => preferences[key]) ? (
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 2 }}>
-                {preferences.hobbies && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Hobbies
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {preferences.hobbies}
-                    </Typography>
-                  </Box>
-                )}
-                {preferences.sports && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Sports
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {preferences.sports}
-                    </Typography>
-                  </Box>
-                )}
-                {preferences.music && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Music
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {preferences.music}
-                    </Typography>
-                  </Box>
-                )}
-                {preferences.movies && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#666", fontWeight: "bold" }}
-                    >
-                      Movies
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#333" }}>
-                      {preferences.movies}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            ) : (
-              <Typography variant="body2" sx={{ color: "#666" }}>
-                No preferences provided yet.
-              </Typography>
-            )}
-          </Box>
-        );
-
-      default:
-        return null;
-    }
+        </Box>
+      </Box>
+    );
   };
-
   if (loading) return <Typography>Loading...</Typography>;
 
   return (
@@ -572,9 +406,12 @@ const Profile: React.FC = () => {
                   py: 2,
                   px: 0,
                   cursor: "pointer",
-                  borderBottom: "1px solid #ccc",
                   fontWeight: activeSection === section ? "bold" : "normal",
                   color: "#333",
+                  borderBottom:
+                    activeSection === section
+                      ? "2px solid #333"
+                      : "1px solid #ccc",
                   "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
                   mb: 1,
                 }}
@@ -656,8 +493,12 @@ const Profile: React.FC = () => {
                 {!isEditing && (
                   <Button
                     variant="text"
-                    startIcon={<Edit />}
-                    onClick={() => setIsEditing(true)}
+                    endIcon={<Edit />}
+                    onClick={() => {
+                      setIsEditing(true);
+                      // Clear any navigation state
+                      window.history.replaceState({}, document.title);
+                    }}
                     sx={{
                       color: "#333",
                       textDecoration: "underline",
@@ -685,46 +526,61 @@ const Profile: React.FC = () => {
               >
                 {renderSectionContent()}
                 {isEditing && (
-                  <Box
-                    sx={{
-                      mt: 4, // Add top margin to separate from form content
-                      width: "100%",
-                      maxWidth: "sm", // Match the text field maxWidth
-                      display: "flex",
-                      ml: activeSection === "Basic Details" && 19,
-                      gap: 2,
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={handleSaveAll}
-                      fullWidth
+                  <>
+                    <Box
                       sx={{
-                        backgroundColor: "#666",
-                        textTransform: "uppercase",
-                        fontWeight: "bold",
-                        py: 1.5, // Add vertical padding to match text field height
-                        "&:hover": { backgroundColor: "#555" },
+                        mt: 4, // Add top margin to separate from form content
+                        width: "100%",
+                        maxWidth: "sm", // Match the text field maxWidth
+                        display: "flex",
+                        ml: activeSection === "Basic Details" && 19,
+                        gap: 2,
                       }}
                     >
-                      Save & Update
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={handleCancel}
-                      fullWidth
+                      <Button
+                        variant="contained"
+                        onClick={handleSaveAll}
+                        fullWidth
+                        sx={{
+                          backgroundColor: "#666",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                          py: 1.5, // Add vertical padding to match text field height
+                          "&:hover": { backgroundColor: "#555" },
+                        }}
+                      >
+                        Save & Update
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCancel}
+                        fullWidth
+                        sx={{
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                          borderColor: "#666",
+                          color: "#666",
+                          backgroundColor: "rgba(255, 255, 255, 0.9)",
+                          py: 1.5, // Add vertical padding to match text field height
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
+
+                    {/* Mandatory field note */}
+                    <Typography
+                      variant="body2"
                       sx={{
-                        textTransform: "uppercase",
-                        fontWeight: "bold",
-                        borderColor: "#666",
                         color: "#666",
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        py: 1.5, // Add vertical padding to match text field height
+                        fontSize: "12px",
+                        mt: 4,
+                        ml: activeSection === "Basic Details" && 19,
                       }}
                     >
-                      Cancel
-                    </Button>
-                  </Box>
+                      * Mandatory field
+                    </Typography>
+                  </>
                 )}
               </Box>
             </Box>
