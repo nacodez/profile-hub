@@ -15,6 +15,7 @@ interface BasicDetailsType {
   firstName?: string;
   lastName?: string;
   email?: string;
+  profileImageUrl?: string; // Optional profile image field
 }
 
 interface AdditionalDetailsType {
@@ -289,8 +290,9 @@ const Profile: React.FC = () => {
                   height: 80,
                   backgroundColor: "#4A90E2",
                 }}
+                src={basic?.profileImageUrl || undefined}
               >
-                <PhotoCamera />
+                {basic?.profileImageUrl && <PhotoCamera />}
               </Avatar>
               <Typography
                 variant="body2"

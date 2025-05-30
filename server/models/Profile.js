@@ -28,6 +28,10 @@ const profileSchema = new mongoose.Schema(
         trim: true,
         lowercase: true,
       },
+      profileImageUrl: {
+        type: String,
+        trim: true,
+      },
     },
     additionalDetails: {
       address: {

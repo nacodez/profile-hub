@@ -1,17 +1,25 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { MenuItem, Box, Typography, Avatar, Button } from "@mui/material";
+import {
+  MenuItem,
+  Box,
+  Typography,
+  Avatar,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import CustomTextField from "../components/CustomTextField"; // Import the custom component
-import CustomSelect from "../components/CustomSelect"; // Import the custom select component
+import CustomTextField from "../components/CustomTextField";
+import CustomSelect from "../components/CustomSelect";
 
 interface BasicDetailsFormValues {
   salutation?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
+  profileImageUrl?: string; // Changed from profileImage to profileImageUrl
 }
 
 interface Props {
@@ -21,7 +29,8 @@ interface Props {
 
 const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
   const lastUpdateRef = useRef<string>("");
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formik = useFormik({
@@ -30,6 +39,7 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
       firstName: data?.firstName || "",
       lastName: data?.lastName || "",
       email: data?.email || "",
+      profileImageUrl: data?.profileImageUrl || "", // Changed field name
     },
     validationSchema: Yup.object({
       salutation: Yup.string().required("Please select your salutation."),
@@ -43,6 +53,36 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
       onUpdate(values);
     },
   });
+
+  // Set initial image from data when component mounts or data changes
+  useEffect(() => {
+    if (data?.profileImageUrl) {
+      setProfileImageUrl(data.profileImageUrl);
+    }
+  }, [data?.profileImageUrl]);
+
+  // Upload image to Cloudinary
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "profilehub_preset");
+    formData.append("folder", "profilehub/avatars");
+
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/dline6ta1/image/upload", // Your cloud name
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    const data = await response.json();
+    return data.secure_url;
+  };
 
   // Debounced update function
   const debouncedUpdate = useCallback(
@@ -62,12 +102,12 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
   ) => {
     formik.handleChange(event);
 
-    // Use setTimeout to debounce updates
     setTimeout(() => {
       if (formik.isValid) {
         debouncedUpdate({
           ...formik.values,
           [event.target.name]: event.target.value,
+          profileImageUrl: profileImageUrl || "",
         });
       }
     }, 300);
@@ -81,24 +121,57 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
         debouncedUpdate({
           ...formik.values,
           [event.target.name]: event.target.value,
+          profileImageUrl: profileImageUrl || "",
         });
       }
     }, 300);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Check file size (limit to 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Please select an image smaller than 5MB");
+          return;
+        }
+
+        setUploading(true);
+
+        // Upload to Cloudinary
+        const imageUrl = await uploadToCloudinary(file);
+
+        setProfileImageUrl(imageUrl);
+
+        // Update form values with the image URL
+        const updatedValues = {
+          ...formik.values,
+          profileImageUrl: imageUrl,
+        };
+
+        // Update formik state
+        formik.setFieldValue("profileImageUrl", imageUrl);
+
+        // Trigger immediate update to parent
+        debouncedUpdate(updatedValues);
+
+        console.log("Image uploaded successfully:", imageUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Error uploading image. Please try again.");
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
   const handleUploadClick = () => {
-    fileInputRef.current?.click();
+    if (!uploading) {
+      fileInputRef.current?.click();
+    }
   };
 
   return (
@@ -122,6 +195,7 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
               alignItems: "center",
               gap: 1,
               minWidth: "120px",
+              position: "relative",
             }}
           >
             <Avatar
@@ -130,20 +204,36 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 height: 80,
                 backgroundColor: "#4A90E2",
               }}
-              src={profileImage || undefined}
+              src={profileImageUrl || undefined}
             >
-              {!profileImage && <PhotoCamera />}
+              {!profileImageUrl && <PhotoCamera />}
             </Avatar>
+
+            {/* Upload Progress Indicator */}
+            {uploading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "30px",
+                  left: "50%",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
+
             <input
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
               ref={fileInputRef}
               style={{ display: "none" }}
+              disabled={uploading}
             />
             <Button
               variant="text"
               onClick={handleUploadClick}
+              disabled={uploading}
               sx={{
                 color: "#333",
                 textDecoration: "underline",
@@ -152,7 +242,7 @@ const BasicDetails: React.FC<Props> = ({ data, onUpdate }) => {
                 minWidth: "auto",
               }}
             >
-              Upload image
+              {uploading ? "Uploading..." : "Upload image"}
             </Button>
           </Box>
 
