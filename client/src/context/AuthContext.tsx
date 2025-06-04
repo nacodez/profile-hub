@@ -7,8 +7,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
 
   const checkAuth = async () => {
+    if (isChecking) return;
+    setIsChecking(true);
+
     try {
       await axios.get("/auth/verify");
       setIsAuthenticated(true);
@@ -17,9 +21,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
+      setIsChecking(false);
     }
   };
-
   const login = () => {
     setIsAuthenticated(true);
   };

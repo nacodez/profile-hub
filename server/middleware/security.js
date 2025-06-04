@@ -5,7 +5,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 // Rate limiting configurations
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: process.env.NODE_ENV === "development" ? 500 : 50,
   message: "Too many authentication attempts, please try again later",
   standardHeaders: true,
   legacyHeaders: false,
