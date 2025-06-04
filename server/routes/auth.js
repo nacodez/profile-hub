@@ -112,7 +112,7 @@ router.post("/login", authValidation.login, validate, async (req, res) => {
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     };
 
     res.cookie("token", accessToken, {
@@ -243,16 +243,15 @@ router.get("/verify", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("token", {
+  const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  };
+
+  res.clearCookie("token", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+
   res.json({
     success: true,
     message: "Logged out successfully",
