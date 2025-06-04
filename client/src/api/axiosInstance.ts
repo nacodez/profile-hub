@@ -47,6 +47,14 @@ axiosInstance.interceptors.response.use(
       _retry?: boolean;
     };
 
+    if (
+      originalRequest.url?.includes('/auth/verify') ||
+      originalRequest.url?.includes('/auth/refresh') ||
+      originalRequest.url?.includes('/auth/login')
+    ) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -59,7 +67,6 @@ axiosInstance.interceptors.response.use(
 
       return new Promise((resolve, reject) => {
         axios
-
           .post(
             `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/refresh`,
             {},
@@ -71,7 +78,10 @@ axiosInstance.interceptors.response.use(
           })
           .catch((err: unknown) => {
             processQueue(err, null);
-            window.location.href = '/login';
+
+            if (!originalRequest.url?.includes('/auth/verify')) {
+              window.location.href = '/login';
+            }
             reject(err);
           })
           .finally(() => {
