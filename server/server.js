@@ -23,7 +23,7 @@ app.use(cookieParser());
 // CORS setup - FIXED to use correct origin
 app.use(
   cors({
-    origin: "http://localhost:5173", // Hardcoded for development
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
   })
 );
